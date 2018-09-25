@@ -22,9 +22,13 @@ https://github.com/linux-audit/audit-userspace/tree/master/rules
 Auditd high performance linux auditing
 https://linux-audit.com/tuning-auditd-high-performance-linux-auditing/
 
-Further rules
+### Further rules
+
+Not all of these rules have been included. 
+
 For PCI DSS compliance see: 
 https://github.com/linux-audit/audit-userspace/blob/master/rules/30-pci-dss-v31.rules
+
 For NISPOM compliance see:
 https://github.com/linux-audit/audit-userspace/blob/master/rules/30-nispom.rules
 
