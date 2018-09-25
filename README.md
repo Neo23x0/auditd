@@ -6,6 +6,16 @@
 
 Best Practice Auditd Configuration
 
+## Idea
+
+The idea of this auditd configuration is to provide a basic configuration that
+
+- works out-of-the-box on all major Linux distributions 
+- fits most use cases
+- produces a reasonable amount of log data
+- covers security relevant activity
+- is easy to read (different sections, many comments)
+
 ## Sources
 
 The configuration is based on the following sources
