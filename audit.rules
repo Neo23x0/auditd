@@ -348,6 +348,20 @@
 ## CHEF https://www.chef.io/chef/
 -w /etc/chef -p wa -k soft_chef
 
+### Docker
+-w /usr/bin/dockerd -k docker
+-w /usr/bin/docker -k docker
+-w /usr/bin/docker-containerd -k docker
+-w /usr/bin/docker-runc -k docker
+-w /var/lib/docker -k docker
+-w /etc/docker -k docker
+-w /etc/sysconfig/docker -k docker
+-w /etc/sysconfig/docker-storage -k docker
+-w /usr/lib/systemd/system/docker.service -k docker
+
+### Kubelet 
+-w /usr/bin/kubelet -k kubelet
+
 # High volume events ----------------------------------------------------------
 
 ## Remove them if the cause to much volumen in your einvironment
