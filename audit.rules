@@ -77,7 +77,7 @@
 -a exit,never -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
--a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
+-a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=_chrony -F subj_type=chronyd_t
 
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
@@ -182,7 +182,6 @@
 -w /etc/sysconfig/network -p wa -k network_modifications
 -w /etc/network/ -p wa -k network
 -a always,exit -F dir=/etc/NetworkManager/ -F perm=wa -k network_modifications
--w /etc/sysconfig/network -p wa -k network_modifications
 ### Changes to issue
 -w /etc/issue -p wa -k etcissue
 -w /etc/issue.net -p wa -k etcissue
