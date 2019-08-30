@@ -194,6 +194,9 @@
 ## Library search paths
 -w /etc/ld.so.conf -p wa -k libpath
 
+## Systemwide library preloads (LD_PRELOAD)
+-w /etc/ld.so.preload -p wa -k systemwide_preloads
+
 ## Pam configuration
 -w /etc/pam.d/ -p wa -k pam
 -w /etc/security/limits.conf -p wa  -k pam
