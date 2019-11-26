@@ -10,7 +10,7 @@
 # Compiled by Florian Roth
 # 
 # Created  : 2017/12/05 
-# Modified : 2018/08/05
+# Modified : 2019/11/26
 # 
 # Based on rules published here:
 #   Gov.uk auditd rules
@@ -154,6 +154,7 @@
 
 ## Sudoers file changes
 -w /etc/sudoers -p wa -k actions
+-w /etc/sudoers.d/ -p wa -k actions
 
 ## Passwd
 -w /usr/bin/passwd -p x -k passwd_modification
