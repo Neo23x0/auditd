@@ -10,7 +10,7 @@
 # Compiled by Florian Roth
 # 
 # Created  : 2017/12/05 
-# Modified : 2018/10/05
+# Modified : 2019/11/26
 # 
 # Based on rules published here:
 #   Gov.uk auditd rules
@@ -154,6 +154,7 @@
 
 ## Sudoers file changes
 -w /etc/sudoers -p wa -k actions
+-w /etc/sudoers.d/ -p wa -k actions
 
 ## Passwd
 -w /usr/bin/passwd -p x -k passwd_modification
@@ -199,6 +200,9 @@
 
 ## Library search paths
 -w /etc/ld.so.conf -p wa -k libpath
+
+## Systemwide library preloads (LD_PRELOAD)
+-w /etc/ld.so.preload -p wa -k systemwide_preloads
 
 ## Pam configuration
 -w /etc/pam.d/ -p wa -k pam
@@ -300,7 +304,11 @@
 -w /usr/bin/socat -p x -k susp_activity
 -w /usr/bin/wireshark -p x -k susp_activity
 -w /usr/bin/rawshark -p x -k susp_activity
--w /usr/bin/rdesktop -p x -k sbin_susp
+-w /usr/bin/rdesktop -p x -k susp_activity
+-w /usr/bin/nmap -p x -k susp_activity 
+
+## Added to catch netcat on Ubuntu
+-w /bin/nc.openbsd -p x -k susp_activity
 
 ## Sbin suspicious activity
 -w /sbin/iptables -p x -k sbin_susp 
