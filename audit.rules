@@ -379,7 +379,7 @@
 
 # High volume events ----------------------------------------------------------
 
-## Remove them if the cause to much volumen in your einvironment
+## Remove them if they cause to much volume in your environment
 
 ## Root command executions 
 -a exit,always -F arch=b64 -F euid=0 -S execve -k rootcmd
