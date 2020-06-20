@@ -1,29 +1,29 @@
 #      ___             ___ __      __
 #     /   | __  ______/ (_) /_____/ /
-#    / /| |/ / / / __  / / __/ __  / 
-#   / ___ / /_/ / /_/ / / /_/ /_/ /  
-#  /_/  |_\__,_/\__,_/_/\__/\__,_/   
-#                                    
-# Linux Audit Daemon - Best Practice Configuration 
+#    / /| |/ / / / __  / / __/ __  /
+#   / ___ / /_/ / /_/ / / /_/ /_/ /
+#  /_/  |_\__,_/\__,_/_/\__/\__,_/
+#
+# Linux Audit Daemon - Best Practice Configuration
 # /etc/audit/audit.rules
 #
 # Compiled by Florian Roth
-# 
-# Created  : 2017/12/05 
+#
+# Created  : 2017/12/05
 # Modified : 2019/11/26
-# 
+#
 # Based on rules published here:
 #   Gov.uk auditd rules
 #   	https://github.com/gds-operations/puppet-auditd/pull/1
 # 	CentOS 7 hardening
 # 		https://highon.coffee/blog/security-harden-centos-7/#auditd---audit-daemon
-# 	Linux audit repo 
+# 	Linux audit repo
 # 		https://github.com/linux-audit/audit-userspace/tree/master/rules
 # 	Auditd high performance linux auditing
 # 		https://linux-audit.com/tuning-auditd-high-performance-linux-auditing/
 #
 # Further rules
-# 	For PCI DSS compliance see: 
+# 	For PCI DSS compliance see:
 # 		https://github.com/linux-audit/audit-userspace/blob/master/rules/30-pci-dss-v31.rules
 # 	For NISPOM compliance see:
 # 		https://github.com/linux-audit/audit-userspace/blob/master/rules/30-nispom.rules
@@ -40,8 +40,8 @@
 -f 1
 
 # Ignore errors
-## e.g. caused by users or files not found in the local environment  
--i 
+## e.g. caused by users or files not found in the local environment
+-i
 
 # Self Auditing ---------------------------------------------------------------
 
@@ -178,7 +178,7 @@
 ### Changes to hostname
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_modifications
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_modifications
-## Successful IPv4 Connections 
+## Successful IPv4 Connections
 -a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4
 -a always,exit -F arch=b32 -S connect -F a2=16 -F success=1 -F key=network_connect_4
 ## Successful IPv6 Connections
@@ -219,13 +219,13 @@
 -w /etc/ssh/sshd_config -k sshd
 
 # Systemd
--w /bin/systemctl -p x -k systemd 
+-w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
 
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
 -w /etc/selinux/ -p wa -k mac_policy
 
-## Critical elements access failures 
+## Critical elements access failures
 -a exit,always -F arch=b64 -S open -F dir=/etc -F success=0 -k unauthedfileaccess
 -a exit,always -F arch=b64 -S open -F dir=/bin -F success=0 -k unauthedfileaccess
 -a exit,always -F arch=b64 -S open -F dir=/sbin -F success=0 -k unauthedfileaccess
@@ -290,6 +290,9 @@
 
 ## Reconnaissance
 -w /usr/bin/whoami -p x -k recon
+-w /usr/bin/id -p x -k recon
+-w /bin/hostname -p x -k recon
+-w /bin/uname -p x -k recon
 -w /etc/issue -p r -k recon
 -w /etc/hostname -p r -k recon
 
@@ -301,23 +304,31 @@
 -w /bin/netcat -p x -k susp_activity
 -w /usr/bin/ncat -p x -k susp_activity
 -w /usr/bin/ssh -p x -k susp_activity
+-w /usr/bin/scp -p x -k susp_activity
+-w /usr/bin/sftp -p x -k susp_activity
+-w /usr/bin/ftp -p x -k susp_activity
 -w /usr/bin/socat -p x -k susp_activity
 -w /usr/bin/wireshark -p x -k susp_activity
+-w /usr/bin/tshark -p x -k susp_activity
 -w /usr/bin/rawshark -p x -k susp_activity
 -w /usr/bin/rdesktop -p x -k susp_activity
--w /usr/bin/nmap -p x -k susp_activity 
+-w /usr/bin/nmap -p x -k susp_activity
 
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
 -w /bin/nc.traditional -p x -k susp_activity
 
 ## Sbin suspicious activity
--w /sbin/iptables -p x -k sbin_susp 
+-w /sbin/iptables -p x -k sbin_susp
+-w /sbin/ip6tables -p x -k sbin_susp
 -w /sbin/ifconfig -p x -k sbin_susp
+-w /usr/sbin/arptables -p x -k sbin_susp
+-w /usr/sbin/ebtables -p x -k sbin_susp
+-w /usr/sbin/nft -p x -k sbin_susp
 -w /usr/sbin/tcpdump -p x -k sbin_susp
 -w /usr/sbin/traceroute -p x -k sbin_susp
 
-## Injection 
+## Injection
 ### These rules watch for code injection by the ptrace facility.
 ### This could indicate someone trying to do something bad or just debugging
 -a always,exit -F arch=b32 -S ptrace -k tracing
@@ -339,6 +350,9 @@
 -w /usr/bin/rpm -p x -k software_mgmt
 -w /usr/bin/yum -p x -k software_mgmt
 
+# DNF (Fedora/RedHat 8/CentOS 8)
+-w /usr/bin/dnf -p x -k software_mgmt
+
 # YAST/Zypper/RPM (SuSE)
 -w /sbin/yast -p x -k yast
 -w /sbin/yast2 -p x -k yast
@@ -347,6 +361,7 @@
 
 # DPKG / APT-GET (Debian/Ubuntu)
 -w /usr/bin/dpkg -p x -k software_mgmt
+-w /usr/bin/apt -p x -k software_mgmt
 -w /usr/bin/apt-add-repository -p x -k software_mgmt
 -w /usr/bin/apt-get -p x -k software_mgmt
 -w /usr/bin/aptitude -p x -k software_mgmt
@@ -356,7 +371,7 @@
 ## GDS specific secrets
 -w /etc/puppet/ssl -p wa -k puppet_ssl
 
-## IBM Bigfix BESClient 
+## IBM Bigfix BESClient
 -a exit,always -F arch=b64 -S open -F dir=/opt/BESClient -F success=0 -k soft_besclient
 -w /var/opt/BESClient/ -p wa -k soft_besclient
 
@@ -374,14 +389,14 @@
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
 
-### Kubelet 
+### Kubelet
 -w /usr/bin/kubelet -k kubelet
 
 # High volume events ----------------------------------------------------------
 
 ## Remove them if they cause to much volume in your environment
 
-## Root command executions 
+## Root command executions
 -a exit,always -F arch=b64 -F euid=0 -S execve -k rootcmd
 -a exit,always -F arch=b32 -F euid=0 -S execve -k rootcmd
 
