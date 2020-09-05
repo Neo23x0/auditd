@@ -211,9 +211,10 @@
 -w /etc/security/namespace.conf -p wa -k pam
 -w /etc/security/namespace.init -p wa -k pam
 
-## Postfix configuration
+## Mail configuration
 -w /etc/aliases -p wa -k mail
 -w /etc/postfix/ -p wa -k mail
+-w /etc/exim4/ -p wa -k mail
 
 ## SSH configuration
 -w /etc/ssh/sshd_config -k sshd
@@ -327,6 +328,7 @@
 -w /usr/sbin/nft -p x -k sbin_susp
 -w /usr/sbin/tcpdump -p x -k sbin_susp
 -w /usr/sbin/traceroute -p x -k sbin_susp
+-w /usr/sbin/ufw -p x -k sbin_susp
 
 ## Injection
 ### These rules watch for code injection by the ptrace facility.
