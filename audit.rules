@@ -369,7 +369,7 @@
 -w /usr/bin/snap -p x -k software_mgmt
 
 # PIP (Python installs)
--w /usr/bin/pip -p x -k software_mgmt		      <
+-w /usr/bin/pip -p x -k software_mgmt
 -w /usr/bin/pip3 -p x -k software_mgmt
 
 # Special Software ------------------------------------------------------------
