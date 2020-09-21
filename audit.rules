@@ -83,14 +83,14 @@
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
 
 ## VMWare tools
--a exit,never -F arch=b32 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
--a exit,never -F arch=b64 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
+-a never,exit -F arch=b32 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
+-a never,exit -F arch=b64 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
 
 ### High Volume Event Filter (especially on Linux Workstations)
--a exit,never -F arch=b32 -F dir=/dev/shm -k sharedmemaccess
--a exit,never -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
--a exit,never -F arch=b32 -F dir=/var/lock/lvm -k locklvm
--a exit,never -F arch=b64 -F dir=/var/lock/lvm -k locklvm
+-a never,exit -F arch=b32 -F dir=/dev/shm -k sharedmemaccess
+-a never,exit -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
+-a never,exit -F arch=b32 -F dir=/var/lock/lvm -k locklvm
+-a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
 ## More information on how to filter events
 ### https://access.redhat.com/solutions/2482221
