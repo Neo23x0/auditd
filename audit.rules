@@ -74,7 +74,7 @@
 
 ## Cron jobs fill the logs with stuff we normally don't want (works with SELinux)
 -a never,user -F subj_type=crond_t
--a exit,never -F subj_type=crond_t
+-a never,exit -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
 -a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=_chrony -F subj_type=chronyd_t
