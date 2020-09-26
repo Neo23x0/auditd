@@ -356,8 +356,8 @@
 -w /usr/bin/dnf -p x -k software_mgmt
 
 # YAST/Zypper/RPM (SuSE)
--w /sbin/yast -p x -k yast
--w /sbin/yast2 -p x -k yast
+-w /sbin/yast -p x -k software_mgmt
+-w /sbin/yast2 -p x -k software_mgmt
 -w /bin/rpm -p x -k software_mgmt
 -w /usr/bin/zypper -k software_mgmt
 
