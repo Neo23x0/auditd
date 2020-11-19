@@ -328,6 +328,7 @@
 -w /sbin/ifconfig -p x -k sbin_susp
 -w /usr/sbin/arptables -p x -k sbin_susp
 -w /usr/sbin/ebtables -p x -k sbin_susp
+-w /sbin/xtables-nft-multi -p x -k sbin_susp
 -w /usr/sbin/nft -p x -k sbin_susp
 -w /usr/sbin/tcpdump -p x -k sbin_susp
 -w /usr/sbin/traceroute -p x -k sbin_susp
