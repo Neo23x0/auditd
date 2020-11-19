@@ -136,6 +136,7 @@
 
 ## Stunnel
 -w /usr/sbin/stunnel -p x -k stunnel
+-w /usr/bin/stunnel -p x -k stunnel
 
 ## Cron configuration & scheduled jobs
 -w /etc/cron.allow -p wa -k cron
