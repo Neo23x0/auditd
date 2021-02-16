@@ -229,6 +229,9 @@
 -w /etc/ssh/sshd_config -k sshd
 -w /etc/ssh/sshd_config.d -k sshd
 
+## root ssh key tampering
+-w /root/.ssh -p wa -k rootkey
+
 # Systemd
 -w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
