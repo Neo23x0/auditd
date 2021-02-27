@@ -331,16 +331,16 @@
 -w /usr/sbin/ufw -p x -k sbin_susp
 
 ## Suspicious shells
--w /bin/ash -p x -k susp_shell
--w /bin/bash -p x -k susp_shell
--w /bin/csh -p x -k susp_shell
--w /bin/dash -p x -k susp_shell
--w /bin/busybox -p x -k susp_shell
--w /bin/ksh -p x -k susp_shell
--w /bin/fish -p x -k susp_shell
--w /bin/tcsh -p x -k susp_shell
--w /bin/tclsh -p x -k susp_shell
--w /bin/zsh -p x -k susp_shell
+#-w /bin/ash -p x -k susp_shell
+#-w /bin/bash -p x -k susp_shell
+#-w /bin/csh -p x -k susp_shell
+#-w /bin/dash -p x -k susp_shell
+#-w /bin/busybox -p x -k susp_shell
+#-w /bin/ksh -p x -k susp_shell
+#-w /bin/fish -p x -k susp_shell
+#-w /bin/tcsh -p x -k susp_shell
+#-w /bin/tclsh -p x -k susp_shell
+#-w /bin/zsh -p x -k susp_shell
 
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
