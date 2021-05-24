@@ -129,8 +129,8 @@
 -a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=-1 -k swap
 
 ## Time
--a always,exit -F arch=b32 -S adjtimex -S settimeofday -S clock_settime -k time
--a always,exit -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time
+-a always,exit -F arch=b32 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
+-a always,exit -F arch=b64 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
 ### Local time zone
 -w /etc/localtime -p wa -k localtime
 
