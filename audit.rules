@@ -108,6 +108,7 @@
 -a always,exit -F perm=x -F auid!=-1 -F path=/sbin/rmmod -k modules
 -a always,exit -F arch=b64 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
 -a always,exit -F arch=b32 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
+
 ## Modprobe configuration
 -w /etc/modprobe.conf -p wa -k modprobe
 -w /etc/modprobe.d -p wa -k modprobe
@@ -124,7 +125,7 @@
 -a always,exit -F arch=b64 -S mount -S umount2 -F auid!=-1 -k mount
 -a always,exit -F arch=b32 -S mount -S umount -S umount2 -F auid!=-1 -k mount
 
-# Change swap (only attributable)
+## Change swap (only attributable)
 -a always,exit -F arch=b64 -S swapon -S swapoff -F auid!=-1 -k swap
 -a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=-1 -k swap
 
@@ -183,18 +184,22 @@
 ### Changes to hostname
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_modifications
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_modifications
-## Successful IPv4 Connections
+
+### Successful IPv4 Connections
 -a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4
 -a always,exit -F arch=b32 -S connect -F a2=16 -F success=1 -F key=network_connect_4
-## Successful IPv6 Connections
+
+### Successful IPv6 Connections
 -a always,exit -F arch=b64 -S connect -F a2=28 -F success=1 -F key=network_connect_6
 -a always,exit -F arch=b32 -S connect -F a2=28 -F success=1 -F key=network_connect_6
+
 ### Changes to other files
 -w /etc/hosts -p wa -k network_modifications
 -w /etc/sysconfig/network -p wa -k network_modifications
 -w /etc/sysconfig/network-scripts -p w -k network_modifications
 -w /etc/network/ -p wa -k network
 -a always,exit -F dir=/etc/NetworkManager/ -F perm=wa -k network_modifications
+
 ### Changes to issue
 -w /etc/issue -p wa -k etcissue
 -w /etc/issue.net -p wa -k etcissue
@@ -394,7 +399,7 @@
 ## CHEF https://www.chef.io/chef/
 -w /etc/chef -p wa -k soft_chef
 
-### Docker
+## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
 -w /usr/bin/docker-containerd -k docker
@@ -405,7 +410,7 @@
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
 
-### Kubelet
+## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
 # High volume events ----------------------------------------------------------
