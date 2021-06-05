@@ -413,7 +413,7 @@
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
-# High volume events ----------------------------------------------------------
+# High Volume Events ----------------------------------------------------------
 
 ## Remove them if they cause to much volume in your environment
 
@@ -451,5 +451,5 @@
 ### bit API.
 -a always,exit -F arch=b32 -S all -k 32bit_api
 
-# Make the configuration immutable --------------------------------------------
+# Make The Configuration Immutable --------------------------------------------
 ##-e 2
