@@ -343,6 +343,10 @@
 -w /usr/sbin/traceroute -p x -k sbin_susp
 -w /usr/sbin/ufw -p x -k sbin_susp
 
+## dbus-send invocation
+### may indicate privilege escalation CVE-2021-3560
+-w /usr/bin/dbus-send -p x -k dbus_send
+
 ## Injection
 ### These rules watch for code injection by the ptrace facility.
 ### This could indicate someone trying to do something bad or just debugging
