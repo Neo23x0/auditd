@@ -42,6 +42,12 @@ https://github.com/linux-audit/audit-userspace/blob/master/rules/30-pci-dss-v31.
 For NISPOM compliance see:
 https://github.com/linux-audit/audit-userspace/blob/master/rules/30-nispom.rules
 
+## Video Explanations by IppSec
+
+IppSec captured a video that explains how to detect the exploitation of the OMIGOD vulnerability using auditd. In that video, he walks you through the audit configuration maintained in this repo and exlains how to use it. I highly recommend this video to get a better understanding of what is happening in the config. 
+
+https://www.youtube.com/watch?v=lc1i9h1GyMA
+
 ## Contribution
 
 Please contribute your changes as pull requests
