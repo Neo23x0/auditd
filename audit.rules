@@ -70,9 +70,6 @@
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
 
-## Ignore EOE records (End Of Event, not needed)
--a always,exclude -F msgtype=EOE
-
 ## Cron jobs fill the logs with stuff we normally don't want (works with SELinux)
 -a never,user -F subj_type=crond_t
 -a never,exit -F subj_type=crond_t
