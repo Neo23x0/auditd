@@ -348,6 +348,10 @@
 ### may indicate privilege escalation CVE-2021-3560
 -w /usr/bin/dbus-send -p x -k dbus_send
 
+## pkexec invocation
+### may indicate privilege escalation CVE-2021-4034
+-w /usr/bin/pkexec -p x -k pkexec
+
 ## Suspicious shells
 #-w /bin/ash -p x -k susp_shell
 #-w /bin/bash -p x -k susp_shell
