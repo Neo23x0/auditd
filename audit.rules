@@ -317,6 +317,8 @@
 -w /bin/nc -p x -k susp_activity
 -w /bin/netcat -p x -k susp_activity
 -w /usr/bin/ncat -p x -k susp_activity
+-w /usr/bin/ss -p x -k susp_activity
+-w /usr/bin/netstat -p x -k susp_activity
 -w /usr/bin/ssh -p x -k susp_activity
 -w /usr/bin/scp -p x -k susp_activity
 -w /usr/bin/sftp -p x -k susp_activity
