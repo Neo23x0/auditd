@@ -75,6 +75,7 @@
 -a never,exit -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
+-a never,exit -F arch=b32 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
 -a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
 
 ## This is not very interesting and wastes a lot of space if the server is public facing
