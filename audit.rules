@@ -457,6 +457,8 @@
 -w /usr/bin/qemu-kvm -p x -k qemu-kvm
 -w /usr/bin/qemu -p x -k qemu
 -w /usr/bin/virtualbox -p x -k virtualbox
+-w /usr/bin/virt-manager -p x -k virt-manager
+-w /usr/bin/VBoxManage -p x -k VBoxManage
    
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
