@@ -451,6 +451,9 @@
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
 
+-w /usr/bin/virt-manager -p x -k virt-manager
+-w /usr/bin/VBoxManage -p x -k VBoxManage
+   
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
