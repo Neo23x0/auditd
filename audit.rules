@@ -1,11 +1,11 @@
 #      ___             ___ __      __
-# /etc/audit/audit.rules
 #     /   | __  ______/ (_) /_____/ /
 #    / /| |/ / / / __  / / __/ __  /
 #   / ___ / /_/ / /_/ / / /_/ /_/ /
 #  /_/  |_\__,_/\__,_/_/\__/\__,_/
 #
 # Linux Audit Daemon - Best Practice Configuration
+# /etc/audit/audit.rules
 #
 # Compiled by Florian Roth
 #
