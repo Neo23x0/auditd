@@ -440,6 +440,16 @@
 ## CHEF https://www.chef.io/chef/
 -w /etc/chef -p wa -k soft_chef
 
+## Salt
+## https://saltproject.io/
+## https://docs.saltproject.io/en/latest/ref/configuration/master.html
+-w /etc/salt -p wa -k soft_salt
+-w /usr/local/etc/salt -p wa -k soft_salt
+
+## Otter
+## https://inedo.com/otter
+-w /etc/otter -p wa -k soft_otter
+   
 ## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
