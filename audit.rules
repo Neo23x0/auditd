@@ -466,6 +466,12 @@
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
 
+## Virtualization stuff
+-w /usr/bin/qemu-system-x86_64 -p x -k qemu-system-x86_64
+-w /usr/bin/qemu-img -p x -k qemu-img
+-w /usr/bin/qemu-kvm -p x -k qemu-kvm
+-w /usr/bin/qemu -p x -k qemu
+-w /usr/bin/virtualbox -p x -k virtualbox
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
    
