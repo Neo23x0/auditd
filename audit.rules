@@ -352,6 +352,7 @@
 ## dbus-send invocation
 ### may indicate privilege escalation CVE-2021-3560
 -w /usr/bin/dbus-send -p x -k dbus_send
+-w /usr/bin/gdbus -p x -k gdubs_call
 
 ## pkexec invocation
 ### may indicate privilege escalation CVE-2021-4034
