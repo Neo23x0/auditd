@@ -436,6 +436,13 @@
 -w /usr/bin/pip -p x -k software_mgmt
 -w /usr/bin/pip3 -p x -k software_mgmt
 
+# npm
+## T1072 third party software
+## https://www.npmjs.com
+## https://docs.npmjs.com/cli/v6/commands/npm-audit
+
+-w /usr/bin/npm -p x -k T1072_third_party_software
+   
 # Special Software ------------------------------------------------------------
 
 ## GDS specific secrets
