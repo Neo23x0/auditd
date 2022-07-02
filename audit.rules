@@ -468,6 +468,7 @@
 -w /etc/sysconfig/docker -k docker
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
+-w /usr/lib/systemd/system/docker.socket -k docker
 
 ## Virtualization stuff
 -w /usr/bin/qemu-system-x86_64 -p x -k qemu-system-x86_64
