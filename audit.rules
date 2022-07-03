@@ -91,7 +91,7 @@
 -a never,exit -F arch=b32 -F dir=/var/lock/lvm -k locklvm
 -a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
-## FileBeat 
+## FileBeat
 -a never,exit -F arch=b32 -F path=/opt/filebeat -k filebeat
 -a never,exit -F arch=b64 -F path=/opt/filebeat -k filebeat
 
@@ -242,6 +242,7 @@
 # Systemd
 -w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
+-w /usr/lib/systemd -p wa -k systemd
 
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
 -w /etc/selinux/ -p wa -k mac_policy
@@ -397,11 +398,11 @@
 -a always,exit -F arch=b64 -S ptrace -k tracing
 
 ## Anonymous File Creation
-### These rules watch the use of memfd_create 
+### These rules watch the use of memfd_create
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
-### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk  
+### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
--a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create      
+-a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create
 
 
 ## Privilege Abuse
@@ -457,7 +458,7 @@
 ## Otter
 ## https://inedo.com/otter
 -w /etc/otter -p wa -k soft_otter
-   
+
 ## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
@@ -478,7 +479,7 @@
 -w /usr/bin/virtualbox -p x -k virtualbox
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
-   
+
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
