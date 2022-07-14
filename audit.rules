@@ -10,7 +10,7 @@
 # Compiled by Florian Roth
 #
 # Created  : 2017/12/05
-# Modified : 2022/06/27
+# Modified : 2022/07/14
 #
 # Based on rules published here:
 #   Gov.uk auditd rules
@@ -65,7 +65,7 @@
 ### We put these early because audit is a first match wins system.
 
 ## Ignore SELinux AVC records
--a always,exclude -F msgtype=AVC
+-a always,exclude -F msgtypeAVC
 
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
@@ -436,6 +436,13 @@
 # PIP (Python installs)
 -w /usr/bin/pip -p x -k software_mgmt
 -w /usr/bin/pip3 -p x -k software_mgmt
+
+# npm
+## T1072 third party software
+## https://www.npmjs.com
+## https://docs.npmjs.com/cli/v6/commands/npm-audit
+
+-w /usr/bin/npm -p x -k T1072_third_party_software
 
 # Comprehensive Perl Archive Network (CPAN) (CPAN installs)
 ## T1072 third party software
