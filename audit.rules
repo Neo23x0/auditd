@@ -10,7 +10,7 @@
 # Compiled by Florian Roth
 #
 # Created  : 2017/12/05
-# Modified : 2022/06/27
+# Modified : 2022/07/14
 #
 # Based on rules published here:
 #   Gov.uk auditd rules
@@ -65,7 +65,7 @@
 ### We put these early because audit is a first match wins system.
 
 ## Ignore SELinux AVC records
--a always,exclude -F msgtype=AVC
+-a always,exclude -F msgtypeAVC
 
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
@@ -91,7 +91,7 @@
 -a never,exit -F arch=b32 -F dir=/var/lock/lvm -k locklvm
 -a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
-## FileBeat 
+## FileBeat
 -a never,exit -F arch=b32 -F path=/opt/filebeat -k filebeat
 -a never,exit -F arch=b64 -F path=/opt/filebeat -k filebeat
 
@@ -242,6 +242,7 @@
 # Systemd
 -w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
+-w /usr/lib/systemd -p wa -k systemd
 
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
 -w /etc/selinux/ -p wa -k mac_policy
@@ -397,11 +398,11 @@
 -a always,exit -F arch=b64 -S ptrace -k tracing
 
 ## Anonymous File Creation
-### These rules watch the use of memfd_create 
+### These rules watch the use of memfd_create
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
-### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk  
+### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
--a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create      
+-a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create
 
 
 ## Privilege Abuse
@@ -442,6 +443,30 @@
 ## https://docs.npmjs.com/cli/v6/commands/npm-audit
 
 -w /usr/bin/npm -p x -k T1072_third_party_software
+
+# Comprehensive Perl Archive Network (CPAN) (CPAN installs)
+## T1072 third party software
+## https://www.cpan.org
+
+-w /usr/bin/cpan -p x -k T1072_third_party_software
+
+# Ruby (RubyGems installs)
+## T1072 third party software
+## https://rubygems.org
+
+-w /usr/bin/gem -p x -k T1072_third_party_software
+
+# LuaRocks (Lua installs)
+## T1072 third party software
+## https://luarocks.org
+
+-w /usr/bin/luarocks -p x -k T1072_third_party_software
+
+# Pacman (Arch Linux)
+## https://wiki.archlinux.org/title/Pacman
+## T1072 third party software
+-w /etc/pacman.conf -p x -k T1072_third_party_software
+-w /etc//etc/pacman.d -p x -k T1072_third_party_software
    
 # Special Software ------------------------------------------------------------
 
@@ -464,7 +489,7 @@
 ## Otter
 ## https://inedo.com/otter
 -w /etc/otter -p wa -k soft_otter
-   
+
 ## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
@@ -475,6 +500,7 @@
 -w /etc/sysconfig/docker -k docker
 -w /etc/sysconfig/docker-storage -k docker
 -w /usr/lib/systemd/system/docker.service -k docker
+-w /usr/lib/systemd/system/docker.socket -k docker
 
 ## Virtualization stuff
 -w /usr/bin/qemu-system-x86_64 -p x -k qemu-system-x86_64
@@ -484,7 +510,7 @@
 -w /usr/bin/virtualbox -p x -k virtualbox
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
-   
+
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
