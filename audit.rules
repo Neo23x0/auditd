@@ -371,6 +371,7 @@
 #-w /bin/tclsh -p x -k susp_shell
 #-w /bin/zsh -p x -k susp_shell
 #-w /bin/xonsh -p x -k susp_shell
+#-w /usr/local/bin/xonsh -p x -k susp_shell
 #-w /bin/open -p x -k susp_shell
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
