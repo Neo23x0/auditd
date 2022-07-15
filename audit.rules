@@ -375,6 +375,12 @@
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
 
+### https://clustershell.readthedocs.io/
+
+#-w /bin/clush -p x -k susp_shell
+#-w /usr/local/bin/clush -p x -k susp_shell
+#-w /etc/clustershell/clush.conf -p x -k susp_shell
+
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
 -w /etc/profile -p wa -k shell_profiles
