@@ -375,6 +375,11 @@
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
 
+### https://github.com/xxh/xxh
+
+#-w /bin/xxh -p x -k susp_shell
+#-w /usr/local/bin/xxh -p x -k susp_shell
+
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
 -w /etc/profile -p wa -k shell_profiles
@@ -384,6 +389,12 @@
 -w /etc/csh.login -p wa -k shell_profiles
 -w /etc/fish/ -p wa -k shell_profiles
 -w /etc/zsh/ -p wa -k shell_profiles
+
+### https://github.com/xxh/xxh
+
+-w /usr/local/bin/xxh.bash -p x -k susp_shell
+-w /usr/local/bin/xxh.xsh -p x -k susp_shell
+-w /usr/local/bin/xxh.zsh -p x -k susp_shell
 
 ## Injection
 ### These rules watch for code injection by the ptrace facility.
