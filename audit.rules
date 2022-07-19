@@ -376,6 +376,11 @@
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
 
+### https://github.com/tmux/tmux
+
+#-w /bin/tmux -p x -k susp_shell
+#-w /usr/local/bin/tmux -p x -k susp_shell
+
 ### https://github.com/xxh/xxh
 
 #-w /bin/xxh -p x -k susp_shell
