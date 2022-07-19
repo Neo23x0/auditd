@@ -376,6 +376,12 @@
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
 
+### https://clustershell.readthedocs.io/
+
+#-w /bin/clush -p x -k susp_shell
+#-w /usr/local/bin/clush -p x -k susp_shell
+#-w /etc/clustershell/clush.conf -p x -k susp_shell
+
 ### https://github.com/tmux/tmux
 
 #-w /bin/tmux -p x -k susp_shell
