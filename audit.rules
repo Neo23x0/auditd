@@ -65,7 +65,7 @@
 ### We put these early because audit is a first match wins system.
 
 ## Ignore SELinux AVC records
--a always,exclude -F msgtypeAVC
+-a always,exclude -F msgtype=AVC
 
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
@@ -81,7 +81,7 @@
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
 
-## VMWare tools
+## VMware tools
 -a never,exit -F arch=b32 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
 -a never,exit -F arch=b64 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
 
@@ -371,6 +371,7 @@
 #-w /bin/tclsh -p x -k susp_shell
 #-w /bin/zsh -p x -k susp_shell
 #-w /bin/xonsh -p x -k susp_shell
+#-w /usr/local/bin/xonsh -p x -k susp_shell
 #-w /bin/open -p x -k susp_shell
 #-w /bin/sh -p x -k susp_shell
 #-w /bin/rbash -p x -k susp_shell
@@ -381,6 +382,16 @@
 #-w /usr/local/bin/clush -p x -k susp_shell
 #-w /etc/clustershell/clush.conf -p x -k susp_shell
 
+### https://github.com/tmux/tmux
+
+#-w /bin/tmux -p x -k susp_shell
+#-w /usr/local/bin/tmux -p x -k susp_shell
+
+### https://github.com/xxh/xxh
+
+#-w /bin/xxh -p x -k susp_shell
+#-w /usr/local/bin/xxh -p x -k susp_shell
+
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
 -w /etc/profile -p wa -k shell_profiles
@@ -390,6 +401,12 @@
 -w /etc/csh.login -p wa -k shell_profiles
 -w /etc/fish/ -p wa -k shell_profiles
 -w /etc/zsh/ -p wa -k shell_profiles
+
+### https://github.com/xxh/xxh
+
+-w /usr/local/bin/xxh.bash -p x -k susp_shell
+-w /usr/local/bin/xxh.xsh -p x -k susp_shell
+-w /usr/local/bin/xxh.zsh -p x -k susp_shell
 
 ## Injection
 ### These rules watch for code injection by the ptrace facility.
