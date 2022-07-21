@@ -569,6 +569,37 @@
 ## https://inedo.com/otter
 -w /etc/otter -p wa -k soft_otter
 
+## T1081 Credentials In Files
+
+-w /usr/bin/grep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/egrep -p x -k T1081_Credentials_In_Files
+
+-w /usr/bin/ugrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
+
+### https://github.com/BurntSushi/ripgrep
+
+-w /usr/bin/rg -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
+
+### https://github.com/ggreer/the_silver_searcher
+
+-w /usr/bin/ag -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/ag -p x -k T1081_Credentials_In_Files
+
+### https://github.com/beyondgrep/ack3
+### https://beyondgrep.com
+
+-w /usr/bin/ack -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/ack -p x -k T1081_Credentials_In_Files
+
+-w /usr/bin/semgrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/semgrep -p x -k T1081_Credentials_In_Files
+
 ## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
