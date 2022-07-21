@@ -60,6 +60,14 @@
 -w /sbin/auditd -p x -k audittools
 -w /usr/sbin/augenrules -p x -k audittools
 
+## Access to all audit trails
+
+-a always,exit -F path=/usr/sbin/ausearch -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aureport -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aulast -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/auvirt -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+
 # Filters ---------------------------------------------------------------------
 
 ### We put these early because audit is a first match wins system.
