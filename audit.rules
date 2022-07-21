@@ -479,6 +479,15 @@
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
 -a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k power_abuse
 
+# Socket Creations
+# will catch both IPv4 and IPv6
+
+-a always,exit -F arch=b32 -S socket -F a0=2  -k T1011_Exfiltration_Over_Other_Network_Medium
+-a always,exit -F arch=b64 -S socket -F a0=2  -k T1011_Exfiltration_Over_Other_Network_Medium
+
+-a always,exit -F arch=b32 -S socket -F a0=10 -k T1011_Exfiltration_Over_Other_Network_Medium
+-a always,exit -F arch=b64 -S socket -F a0=10 -k T1011_Exfiltration_Over_Other_Network_Medium
+
 # Software Management ---------------------------------------------------------
 
 # RPM (Redhat/CentOS)
