@@ -337,6 +337,42 @@
 -w /usr/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
+## T1002 Data Compressed
+
+-w /usr/bin/zip -p x -k T1002_Data_Compressed
+-w /usr/bin/gzip -p x -k T1002_Data_Compressed
+-w /usr/bin/tar -p x -k T1002_Data_Compressed
+-w /usr/bin/bzip2 -p x -k T1002_Data_Compressed
+
+-w /usr/bin/lzip -p x -k T1002_Data_Compressed
+-w /usr/local/bin/lzip -p x -k T1002_Data_Compressed
+
+-w /usr/bin/lz4 -p x -k T1002_Data_Compressed
+-w /usr/local/bin/lz4 -p x -k T1002_Data_Compressed
+
+-w /usr/bin/lzop -p x -k T1002_Data_Compressed
+-w /usr/local/bin/lzop -p x -k T1002_Data_Compressed
+
+-w /usr/bin/plzip -p x -k T1002_Data_Compressed
+-w /usr/local/bin/plzip -p x -k T1002_Data_Compressed
+
+-w /usr/bin/pbzip2 -p x -k T1002_Data_Compressed
+-w /usr/local/bin/pbzip2 -p x -k T1002_Data_Compressed
+
+-w /usr/bin/lbzip2 -p x -k T1002_Data_Compressed
+-w /usr/local/bin/lbzip2 -p x -k T1002_Data_Compressed
+
+-w /usr/bin/pixz -p x -k T1002_Data_Compressed
+-w /usr/local/bin/pixz -p x -k T1002_Data_Compressed
+
+-w /usr/bin/pigz -p x -k T1002_Data_Compressed
+-w /usr/local/bin/pigz -p x -k T1002_Data_Compressed
+-w /usr/bin/unpigz -p x -k T1002_Data_Compressed
+-w /usr/local/bin/unpigz -p x -k T1002_Data_Compressed
+
+-w /usr/bin/zstd -p x -k T1002_Data_Compressed
+-w /usr/local/bin/zstd -p x -k T1002_Data_Compressed
+
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
 -w /bin/nc.traditional -p x -k susp_activity
