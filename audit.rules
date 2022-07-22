@@ -593,6 +593,38 @@
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
+# ipc system call
+# /usr/include/linux/ipc.h
+
+## msgctl
+#-a entry,always -S ipc -F a0=14 -k T1043_Commonly_Used_Port
+## msgget
+#-a entry,always -S ipc -F a0=13 -k T1043_Commonly_Used_Port
+## Use these lines on x86_64, ia64 instead
+-a entry,always -S msgctl -k T1043_Commonly_Used_Port
+-a entry,always -S msgget -k T1043_Commonly_Used_Port
+
+## semctl
+#-a entry,always -S ipc -F a0=3 -k T1043_Commonly_Used_Port
+## semget
+#-a entry,always -S ipc -F a0=2 -k T1043_Commonly_Used_Port
+## semop
+#-a entry,always -S ipc -F a0=1 -k T1043_Commonly_Used_Port
+## semtimedop
+#-a entry,always -S ipc -F a0=4 -k T1043_Commonly_Used_Port
+## Use these lines on x86_64, ia64 instead
+-a entry,always -S semctl -k T1043_Commonly_Used_Port
+-a entry,always -S semget -k T1043_Commonly_Used_Port
+-a entry,always -S semop -k T1043_Commonly_Used_Port
+-a entry,always -S semtimedop -k T1043_Commonly_Used_Port
+
+## shmctl
+#-a entry,always -S ipc -F a0=24 -k T1043_Commonly_Used_Port
+## shmget
+#-a entry,always -S ipc -F a0=23 -k T1043_Commonly_Used_Port
+## Use these lines on x86_64, ia64 instead
+-a entry,always -S shmctl -k T1043_Commonly_Used_Port
+-a entry,always -S shmget -k T1043_Commonly_Used_Port
 # High Volume Events ----------------------------------------------------------
 
 ## Remove them if they cause to much volume in your environment
