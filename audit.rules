@@ -598,8 +598,8 @@
 ## Remove them if they cause to much volume in your environment
 
 ## Root command executions
--a always,exit -F arch=b64 -F euid=0 -S execve -k rootcmd
--a always,exit -F arch=b32 -F euid=0 -S execve -k rootcmd
+-a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
+-a always,exit -F arch=b32 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
 
 ## File Deletion Events by User
 -a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
