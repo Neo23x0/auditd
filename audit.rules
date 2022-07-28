@@ -340,7 +340,8 @@
 -w /usr/bin/wireshark -p x -k susp_activity
 -w /usr/bin/tshark -p x -k susp_activity
 -w /usr/bin/rawshark -p x -k susp_activity
--w /usr/bin/rdesktop -p x -k susp_activity
+-w /usr/bin/rdesktop -p x -k T1219_Remote_Access_Tools
+-w /usr/local/bin/rdesktop -p x -k T1219_Remote_Access_Tools
 -w /usr/bin/wlfreerdp -p x -k susp_activity
 -w /usr/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
