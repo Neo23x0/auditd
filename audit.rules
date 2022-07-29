@@ -627,6 +627,26 @@
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
 
+#### VirtualBox on macOS
+
+-w /usr/local/bin/VirtualBox -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VirtualBoxVM -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxManage -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxVRDP -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxHeadless -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/vboxwebsrv -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxBugReport -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxBalloonCtrl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxAutostart -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VBoxDTrace -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/vbox-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/LaunchDaemons/org.virtualbox.startup.plist -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Application Support/VirtualBox/LaunchDaemons/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Application Support/VirtualBox/VBoxDrv.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Application Support/VirtualBox/VBoxUSB.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Application Support/VirtualBox/VBoxNetFlt.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Application Support/VirtualBox/VBoxNetAdp.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
