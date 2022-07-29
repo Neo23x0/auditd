@@ -512,9 +512,12 @@
 -w /usr/bin/wajig -p x -k software_mgmt
 -w /usr/bin/snap -p x -k software_mgmt
 
-# PIP (Python installs)
--w /usr/bin/pip -p x -k software_mgmt
--w /usr/bin/pip3 -p x -k software_mgmt
+# PIP(3) (Python installs)
+
+-w /usr/bin/pip -p x -k T1072_third_party_software
+-w /usr/local/bin/pip -p x -k T1072_third_party_software
+-w /usr/bin/pip3 -p x -k T1072_third_party_software
+-w /usr/local/bin/pip3 -p x -k T1072_third_party_software
 
 # npm
 ## T1072 third party software
