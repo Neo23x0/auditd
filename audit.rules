@@ -58,6 +58,7 @@
 ## Monitor for use of audit management tools
 -w /sbin/auditctl -p x -k audittools
 -w /sbin/auditd -p x -k audittools
+-w /usr/sbin/auditd -p x -k audittools
 -w /usr/sbin/augenrules -p x -k audittools
 
 ## Access to all audit trails
