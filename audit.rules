@@ -47,7 +47,9 @@
 
 ## Audit the audit logs
 ### Successful and unsuccessful attempts to read information from the audit records
--w /var/log/audit/ -k auditlog
+-w /var/log/audit/ -k T1005_Data_From_Local_System_audit_log
+### macOS
+-w /var/audit/ -k T1005_Data_From_Local_System_audit_log
 
 ## Auditd configuration
 ### Modifications to audit configuration that occur while the audit collection functions are operating
