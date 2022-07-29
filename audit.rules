@@ -627,6 +627,14 @@
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
 
+### qemu on macOS
+
+-w /usr/local/bin/qemu-edid -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-io -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-nbd -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-system-x86_64 -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
