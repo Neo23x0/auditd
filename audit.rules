@@ -65,11 +65,11 @@
 
 ## Access to all audit trails
 
--a always,exit -F path=/usr/sbin/ausearch -F perm=x -F -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aureport -F perm=x -F -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aulast -F perm=x -F -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -F -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/auvirt -F perm=x -F -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/ausearch -F perm=x -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aureport -F perm=x -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aulast -F perm=x -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/auvirt -F perm=x -k T1005_Data_From_Local_System_audit_log
 
 # Filters ---------------------------------------------------------------------
 
