@@ -629,6 +629,17 @@
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
 
+### Parallels Desktop on macOS
+
+-w /usr/local/bin/prl_convert -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prl_disk_tool -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prl_perf_ctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prlcore2dmp -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prlctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prlexec -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prlsrvctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /Library/Preferences/Parallels -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+
 ### qemu on macOS
 
 -w /usr/local/bin/qemu-edid -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
