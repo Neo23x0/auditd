@@ -26,8 +26,8 @@ jobs:
 
       - name: Test the new rules
         run: |
-          rm /etc/audit/rules.d/*
-          auditctl -D
-          cp $GITHUB_WORKSPACE/audit.rules /etc/audit/rules.d/
-          augenrules --load # check for errors
-          auditctl -l # check for all rules
+          sudo rm /etc/audit/rules.d/*
+          sudo auditctl -D
+          sudo cp $GITHUB_WORKSPACE/audit.rules /etc/audit/rules.d/
+          sudo augenrules --load # check for errors
+          sudo auditctl -l # check for all rules
