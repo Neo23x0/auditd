@@ -47,7 +47,9 @@
 
 ## Audit the audit logs
 ### Successful and unsuccessful attempts to read information from the audit records
--w /var/log/audit/ -k auditlog
+-w /var/log/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
+### macOS
+-w /var/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
 
 ## Auditd configuration
 ### Modifications to audit configuration that occur while the audit collection functions are operating
@@ -551,7 +553,7 @@
 ## https://wiki.archlinux.org/title/Pacman
 ## T1072 third party software
 -w /etc/pacman.conf -p x -k T1072_third_party_software
--w /etc//etc/pacman.d -p x -k T1072_third_party_software
+-w /etc/pacman.d -p x -k T1072_third_party_software
    
 # Special Software ------------------------------------------------------------
 
@@ -638,6 +640,14 @@
 -w /usr/local/bin/prlsrvctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
 -w /Library/Preferences/Parallels -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
 
+### qemu on macOS
+
+-w /usr/local/bin/qemu-edid -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-io -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-nbd -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-system-x86_64 -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
 
@@ -645,34 +655,34 @@
 # /usr/include/linux/ipc.h
 
 ## msgctl
-#-a entry,always -S ipc -F a0=14 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=14 -k T1559_Inter-Process_Communication
 ## msgget
-#-a entry,always -S ipc -F a0=13 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=13 -k T1559_Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a entry,always -S msgctl -k T1559_Inter-Process_Communication
--a entry,always -S msgget -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S msgctl -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S msgget -k T1559_Inter-Process_Communication
 
 ## semctl
-#-a entry,always -S ipc -F a0=3 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=3 -k T1559_Inter-Process_Communication
 ## semget
-#-a entry,always -S ipc -F a0=2 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=2 -k T1559_Inter-Process_Communication
 ## semop
-#-a entry,always -S ipc -F a0=1 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=1 -k T1559_Inter-Process_Communication
 ## semtimedop
-#-a entry,always -S ipc -F a0=4 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=4 -k T1559_Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a entry,always -S semctl -k T1559_Inter-Process_Communication
--a entry,always -S semget -k T1559_Inter-Process_Communication
--a entry,always -S semop -k T1559_Inter-Process_Communication
--a entry,always -S semtimedop -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S semctl -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S semget -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S semop -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S semtimedop -k T1559_Inter-Process_Communication
 
 ## shmctl
-#-a entry,always -S ipc -F a0=24 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=24 -k T1559_Inter-Process_Communication
 ## shmget
-#-a entry,always -S ipc -F a0=23 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=23 -k T1559_Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a entry,always -S shmctl -k T1559_Inter-Process_Communication
--a entry,always -S shmget -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S shmctl -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S shmget -k T1559_Inter-Process_Communication
 
 # High Volume Events ----------------------------------------------------------
 
