@@ -1,0 +1,6 @@
+###Can be used to detect Remote Shell Use. Note the comm files in logs are of high value###
+
+-a always,exit -F arch=b64  -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b64  -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b32  -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b32  -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
