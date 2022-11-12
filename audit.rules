@@ -47,8 +47,8 @@
 
 ## Audit the audit logs
 ### Successful and unsuccessful attempts to read information from the audit records
+-w /var/log/audit/ -p wra -k auditlog
 -w /var/log/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
-### macOS
 -w /var/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
 
 ## Auditd configuration
