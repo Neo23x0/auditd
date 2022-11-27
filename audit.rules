@@ -592,6 +592,12 @@
 ### macOS
 -w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
 
+### https://github.com/monochromegane/the_platinum_searcher
+
+-w /usr/bin/pt -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/pt -p x -k T1081_Credentials_In_Files
+
 ### https://github.com/ggreer/the_silver_searcher
 
 -w /usr/bin/ag -p x -k T1081_Credentials_In_Files
