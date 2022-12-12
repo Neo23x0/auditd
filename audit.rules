@@ -587,31 +587,33 @@
 -w /usr/bin/grep -p x -k T1081_Credentials_In_Files
 -w /usr/bin/egrep -p x -k T1081_Credentials_In_Files
 -w /usr/bin/ugrep -p x -k T1081_Credentials_In_Files
-
 ### macOS
+-w /usr/local/bin/grep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/egrep -p x -k T1081_Credentials_In_Files
 -w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/tmbinc/bgrep
-
 -w /usr/bin/bgrep -p x -k T1081_Credentials_In_Files
 ### macOS
 -w /usr/local/bin/bgrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/BurntSushi/ripgrep
 -w /usr/bin/rg -p x -k T1081_Credentials_In_Files
-
 ### macOS
 -w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
 
+### https://github.com/monochromegane/the_platinum_searcher
+-w /usr/bin/pt -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/pt -p x -k T1081_Credentials_In_Files
+
 ### https://github.com/gvansickle/ucg
 -w /usr/bin/ucg -p x -k T1081_Credentials_In_Files
-
 ### macOS
 -w /usr/local/bin/ucg -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/ggreer/the_silver_searcher
 -w /usr/bin/ag -p x -k T1081_Credentials_In_Files
-
 ### macOS
 -w /usr/local/bin/ag -p x -k T1081_Credentials_In_Files
 
@@ -620,7 +622,6 @@
 -w /usr/bin/ack -p x -k T1081_Credentials_In_Files
 -w /usr/local/bin/ack -p x -k T1081_Credentials_In_Files
 -w /usr/bin/semgrep -p x -k T1081_Credentials_In_Files
-
 ### macOS
 -w /usr/local/bin/semgrep -p x -k T1081_Credentials_In_Files
 
