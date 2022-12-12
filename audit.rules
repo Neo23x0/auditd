@@ -592,6 +592,12 @@
 ### macOS
 -w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
 
+### https://github.com/tmbinc/bgrep
+
+-w /usr/bin/bgrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/bgrep -p x -k T1081_Credentials_In_Files
+
 ### https://github.com/BurntSushi/ripgrep
 
 -w /usr/bin/rg -p x -k T1081_Credentials_In_Files
