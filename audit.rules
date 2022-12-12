@@ -164,7 +164,7 @@
 -w /etc/cron.monthly/ -p wa -k cron
 -w /etc/cron.weekly/ -p wa -k cron
 -w /etc/crontab -p wa -k cron
--w /var/spool/cron/ -k cron
+-w /var/spool/cron/ -p wa -k cron
 
 ## User, group, password databases
 -w /etc/group -p wa -k etcgroup
@@ -200,6 +200,12 @@
 ### Changes to hostname
 -a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_modifications
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_modifications
+
+### Detect Remote Shell Use
+-a always,exit -F arch=b32 -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b64 -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b32 -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
+-a always,exit -F arch=b64 -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
 
 ### Successful IPv4 Connections
 -a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4
@@ -578,38 +584,43 @@
 -w /etc/otter -p wa -k soft_otter
 
 ## T1081 Credentials In Files
-
 -w /usr/bin/grep -p x -k T1081_Credentials_In_Files
 -w /usr/bin/egrep -p x -k T1081_Credentials_In_Files
-
 -w /usr/bin/ugrep -p x -k T1081_Credentials_In_Files
 ### macOS
+-w /usr/local/bin/grep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/egrep -p x -k T1081_Credentials_In_Files
 -w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
 
-### https://github.com/BurntSushi/ripgrep
+### https://github.com/tmbinc/bgrep
+-w /usr/bin/bgrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/bgrep -p x -k T1081_Credentials_In_Files
 
+### https://github.com/BurntSushi/ripgrep
 -w /usr/bin/rg -p x -k T1081_Credentials_In_Files
 ### macOS
 -w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/monochromegane/the_platinum_searcher
-
 -w /usr/bin/pt -p x -k T1081_Credentials_In_Files
 ### macOS
 -w /usr/local/bin/pt -p x -k T1081_Credentials_In_Files
 
-### https://github.com/ggreer/the_silver_searcher
+### https://github.com/gvansickle/ucg
+-w /usr/bin/ucg -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/ucg -p x -k T1081_Credentials_In_Files
 
+### https://github.com/ggreer/the_silver_searcher
 -w /usr/bin/ag -p x -k T1081_Credentials_In_Files
 ### macOS
 -w /usr/local/bin/ag -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/beyondgrep/ack3
 ### https://beyondgrep.com
-
 -w /usr/bin/ack -p x -k T1081_Credentials_In_Files
 -w /usr/local/bin/ack -p x -k T1081_Credentials_In_Files
-
 -w /usr/bin/semgrep -p x -k T1081_Credentials_In_Files
 ### macOS
 -w /usr/local/bin/semgrep -p x -k T1081_Credentials_In_Files

@@ -5,9 +5,11 @@ name: Auditd Syntax Checks
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -21,15 +23,31 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Install auditd
-        run: sudo apt-get install -y auditd
+      - name: Update package information
+        run: sudo apt update
 
-      - name: Copy the new rules to the right location
+      - name: Install auditd
+        run: sudo apt install -y auditd
+
+      - name: Start auditd
+        run: if ! (systemctl is-active auditd); then sudo systemctl start auditd; fi
+
+      - name: Remove default rules
         run: |
-          sudo auditctl -D
-          sudo cp $GITHUB_WORKSPACE/audit.rules /etc/audit/audit.rules
-          
-      - name: Check the rules for errors
-        run: |          
-          sudo augenrules --load # check for errors
-          sudo auditctl -l # check for all rules
+          sudo ls -l /etc/audit/rules.d/
+          sudo rm /etc/audit/audit.rules
+          sudo rm -rf /etc/audit/rules.d
+          sudo mkdir /etc/audit/rules.d
+
+      - name: Copy rules file to rules directory
+        run: sudo cp $GITHUB_WORKSPACE/audit.rules /etc/audit/rules.d/
+
+      - name: Check rules
+        run: sudo augenrules --check 2>&1
+
+      # This will load the compiled rules file, check how many lines are in it, and display each line if successful
+      - name: Load rules
+        run: |
+          sudo augenrules --load 2>&1
+          sudo wc -l /etc/audit/audit.rules
+          sudo auditctl -l
