@@ -420,7 +420,6 @@
 ## Suspicious shells
 -w /bin/ash -p x -k susp_shell
 -w /bin/csh -p x -k susp_shell
--w /bin/dash -p x -k susp_shell
 -w /bin/fish -p x -k susp_shell
 -w /bin/tcsh -p x -k susp_shell
 -w /bin/tclsh -p x -k susp_shell
@@ -713,6 +712,7 @@
 
 ## Common Shells
 -w /bin/bash -p x -k susp_shell
+-w /bin/dash -p x -k susp_shell
 -w /bin/busybox -p x -k susp_shell
 -w /bin/zsh -p x -k susp_shell
 -w /bin/sh -p x -k susp_shell
