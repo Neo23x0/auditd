@@ -10,7 +10,7 @@
 # Compiled by Florian Roth
 #
 # Created  : 2017/12/05
-# Modified : 2022/12/12
+# Modified : 2023/01/25
 #
 # Based on rules published here:
 #   Gov.uk auditd rules
@@ -418,37 +418,30 @@
 -w /usr/bin/pkexec -p x -k pkexec
 
 ## Suspicious shells
-#-w /bin/ash -p x -k susp_shell
-#-w /bin/bash -p x -k susp_shell
-#-w /bin/csh -p x -k susp_shell
-#-w /bin/dash -p x -k susp_shell
-#-w /bin/busybox -p x -k susp_shell
-#-w /bin/ksh -p x -k susp_shell
-#-w /bin/fish -p x -k susp_shell
-#-w /bin/tcsh -p x -k susp_shell
-#-w /bin/tclsh -p x -k susp_shell
-#-w /bin/zsh -p x -k susp_shell
-#-w /bin/xonsh -p x -k susp_shell
-#-w /usr/local/bin/xonsh -p x -k susp_shell
-#-w /bin/open -p x -k susp_shell
-#-w /bin/sh -p x -k susp_shell
-#-w /bin/rbash -p x -k susp_shell
+-w /bin/ash -p x -k susp_shell
+-w /bin/csh -p x -k susp_shell
+-w /bin/dash -p x -k susp_shell
+-w /bin/fish -p x -k susp_shell
+-w /bin/tcsh -p x -k susp_shell
+-w /bin/tclsh -p x -k susp_shell
+-w /bin/xonsh -p x -k susp_shell
+-w /usr/local/bin/xonsh -p x -k susp_shell
+-w /bin/open -p x -k susp_shell
+-w /bin/rbash -p x -k susp_shell
+
+# Web Server Actvity
+## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
+-a always,exit -F arch=b32 -S execve -F euid=33 -k detect_execve_www
+-a always,exit -F arch=b64 -S execve -F euid=33 -k detect_execve_www
 
 ### https://clustershell.readthedocs.io/
-
-#-w /bin/clush -p x -k susp_shell
-#-w /usr/local/bin/clush -p x -k susp_shell
-#-w /etc/clustershell/clush.conf -p x -k susp_shell
+-w /bin/clush -p x -k susp_shell
+-w /usr/local/bin/clush -p x -k susp_shell
+-w /etc/clustershell/clush.conf -p x -k susp_shell
 
 ### https://github.com/tmux/tmux
-
-#-w /bin/tmux -p x -k susp_shell
-#-w /usr/local/bin/tmux -p x -k susp_shell
-
-### https://github.com/xxh/xxh
-
-#-w /bin/xxh -p x -k susp_shell
-#-w /usr/local/bin/xxh -p x -k susp_shell
+-w /bin/tmux -p x -k susp_shell
+-w /usr/local/bin/tmux -p x -k susp_shell
 
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
@@ -461,7 +454,6 @@
 -w /etc/zsh/ -p wa -k shell_profiles
 
 ### https://github.com/xxh/xxh
-
 -w /usr/local/bin/xxh.bash -p x -k susp_shell
 -w /usr/local/bin/xxh.xsh -p x -k susp_shell
 -w /usr/local/bin/xxh.zsh -p x -k susp_shell
@@ -484,7 +476,6 @@
 ### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
 -a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create
-
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
@@ -524,7 +515,6 @@
 -w /usr/bin/snap -p x -k software_mgmt
 
 # PIP(3) (Python installs)
-
 -w /usr/bin/pip -p x -k T1072_third_party_software
 -w /usr/local/bin/pip -p x -k T1072_third_party_software
 -w /usr/bin/pip3 -p x -k T1072_third_party_software
@@ -534,25 +524,21 @@
 ## T1072 third party software
 ## https://www.npmjs.com
 ## https://docs.npmjs.com/cli/v6/commands/npm-audit
-
 -w /usr/bin/npm -p x -k T1072_third_party_software
 
 # Comprehensive Perl Archive Network (CPAN) (CPAN installs)
 ## T1072 third party software
 ## https://www.cpan.org
-
 -w /usr/bin/cpan -p x -k T1072_third_party_software
 
 # Ruby (RubyGems installs)
 ## T1072 third party software
 ## https://rubygems.org
-
 -w /usr/bin/gem -p x -k T1072_third_party_software
 
 # LuaRocks (Lua installs)
 ## T1072 third party software
 ## https://luarocks.org
-
 -w /usr/bin/luarocks -p x -k T1072_third_party_software
 
 # Pacman (Arch Linux)
@@ -723,7 +709,14 @@
 
 # High Volume Events ----------------------------------------------------------
 
-## Remove them if they cause to much volume in your environment
+## Disable these rules if they create too many events in your environment
+
+## Common Shells
+-w /bin/bash -p x -k susp_shell
+-w /bin/busybox -p x -k susp_shell
+-w /bin/zsh -p x -k susp_shell
+-w /bin/sh -p x -k susp_shell
+-w /bin/ksh -p x -k susp_shell
 
 ## Root command executions
 -a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
