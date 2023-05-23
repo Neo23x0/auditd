@@ -518,6 +518,8 @@
 -w /usr/local/bin/pip -p x -k T1072_third_party_software
 -w /usr/bin/pip3 -p x -k T1072_third_party_software
 -w /usr/local/bin/pip3 -p x -k T1072_third_party_software
+-w /usr/bin/pipx -p x -k T1072_third_party_software
+-w /usr/local/bin/pipx -p x -k T1072_third_party_software
 
 # npm
 ## T1072 third party software
