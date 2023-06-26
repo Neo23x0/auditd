@@ -615,7 +615,7 @@
 -w /usr/bin/docker -k docker
 -w /usr/bin/docker-containerd -k docker
 -w /usr/bin/docker-runc -k docker
--w /var/lib/docker -k docker
+-w /var/lib/docker -p wa -k docker
 -w /etc/docker -k docker
 -w /etc/sysconfig/docker -k docker
 -w /etc/sysconfig/docker-storage -k docker
