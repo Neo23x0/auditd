@@ -264,6 +264,15 @@
 -w /etc/systemd/ -p wa -k systemd
 -w /usr/lib/systemd -p wa -k systemd
 
+## https://systemd.network/systemd.generator.html
+-w /etc/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /usr/local/lib/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /usr/lib/systemd/system-generators -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+
+-w /etc/systemd/user-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /usr/local/lib/systemd/user-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /lib/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
 -w /etc/selinux/ -p wa -k mac_policy
 
