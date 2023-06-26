@@ -596,6 +596,22 @@
 ### macOS
 -w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
 
+### https://github.com/awgn/cgrep
+
+-w /usr/bin/cgrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/cgrep -p x -k T1081_Credentials_In_Files
+
+### https://github.com/jpr5/ngrep
+-w /usr/bin/ngrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/ngrep -p x -k T1081_Credentials_In_Files
+
+### https://github.com/vrothberg/vgrep
+-w /usr/bin/vgrep -p x -k T1081_Credentials_In_Files
+### macOS
+-w /usr/local/bin/vgrep -p x -k T1081_Credentials_In_Files
+
 ### https://github.com/monochromegane/the_platinum_searcher
 -w /usr/bin/pt -p x -k T1081_Credentials_In_Files
 ### macOS
