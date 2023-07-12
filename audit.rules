@@ -86,7 +86,7 @@
 -a never,exit -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
--a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
+-a never,exit -F arch=b64 -S adjtimex -F auid=-1 -F uid=chrony -F subj_type=chronyd_t
 
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
@@ -706,7 +706,7 @@
 -w /bin/ksh -p x -k susp_shell
 
 ## Root command executions
--a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
+-a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=-1 -S execve -k rootcmd
 
 ## File Deletion Events by User
 -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
