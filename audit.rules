@@ -298,6 +298,9 @@
 -w /sbin/reboot -p x -k power
 -w /sbin/halt -p x -k power
 
+## Pre-OS Boot
+-w /boot/grub2/grub.cfg -p wa -k T1542.003_1
+
 ## Session initiation information
 -w /var/run/utmp -p wa -k session
 -w /var/log/btmp -p wa -k session
