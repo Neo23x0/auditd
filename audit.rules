@@ -337,35 +337,15 @@
 -w /usr/bin/gzip -p x -k T1002_Data_Compressed
 -w /usr/bin/tar -p x -k T1002_Data_Compressed
 -w /usr/bin/bzip2 -p x -k T1002_Data_Compressed
-
 -w /usr/bin/lzip -p x -k T1002_Data_Compressed
--w /usr/local/bin/lzip -p x -k T1002_Data_Compressed
-
 -w /usr/bin/lz4 -p x -k T1002_Data_Compressed
--w /usr/local/bin/lz4 -p x -k T1002_Data_Compressed
-
 -w /usr/bin/lzop -p x -k T1002_Data_Compressed
--w /usr/local/bin/lzop -p x -k T1002_Data_Compressed
-
 -w /usr/bin/plzip -p x -k T1002_Data_Compressed
--w /usr/local/bin/plzip -p x -k T1002_Data_Compressed
-
 -w /usr/bin/pbzip2 -p x -k T1002_Data_Compressed
--w /usr/local/bin/pbzip2 -p x -k T1002_Data_Compressed
-
 -w /usr/bin/lbzip2 -p x -k T1002_Data_Compressed
--w /usr/local/bin/lbzip2 -p x -k T1002_Data_Compressed
-
 -w /usr/bin/pixz -p x -k T1002_Data_Compressed
--w /usr/local/bin/pixz -p x -k T1002_Data_Compressed
-
 -w /usr/bin/pigz -p x -k T1002_Data_Compressed
--w /usr/local/bin/pigz -p x -k T1002_Data_Compressed
--w /usr/bin/unpigz -p x -k T1002_Data_Compressed
--w /usr/local/bin/unpigz -p x -k T1002_Data_Compressed
-
 -w /usr/bin/zstd -p x -k T1002_Data_Compressed
--w /usr/local/bin/zstd -p x -k T1002_Data_Compressed
 
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
@@ -541,59 +521,37 @@
 -w /usr/bin/grep -p x -k T1081_Credentials_In_Files
 -w /usr/bin/egrep -p x -k T1081_Credentials_In_Files
 -w /usr/bin/ugrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/grep -p x -k T1081_Credentials_In_Files
--w /usr/local/bin/egrep -p x -k T1081_Credentials_In_Files
--w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/tmbinc/bgrep
 -w /usr/bin/bgrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/bgrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/BurntSushi/ripgrep
 -w /usr/bin/rg -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/awgn/cgrep
 
 -w /usr/bin/cgrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/cgrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/jpr5/ngrep
 -w /usr/bin/ngrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/ngrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/vrothberg/vgrep
 -w /usr/bin/vgrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/vgrep -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/monochromegane/the_platinum_searcher
 -w /usr/bin/pt -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/pt -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/gvansickle/ucg
 -w /usr/bin/ucg -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/ucg -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/ggreer/the_silver_searcher
 -w /usr/bin/ag -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/ag -p x -k T1081_Credentials_In_Files
 
 ### https://github.com/beyondgrep/ack3
 ### https://beyondgrep.com
 -w /usr/bin/ack -p x -k T1081_Credentials_In_Files
 -w /usr/local/bin/ack -p x -k T1081_Credentials_In_Files
 -w /usr/bin/semgrep -p x -k T1081_Credentials_In_Files
-### macOS
--w /usr/local/bin/semgrep -p x -k T1081_Credentials_In_Files
 
 ## Docker
 -w /usr/bin/dockerd -k docker
@@ -615,45 +573,6 @@
 -w /usr/bin/virtualbox -p x -k virtualbox
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
-
-#### VirtualBox on macOS
-
--w /usr/local/bin/VirtualBox -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VirtualBoxVM -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxManage -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxVRDP -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxHeadless -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/vboxwebsrv -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxBugReport -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxBalloonCtrl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxAutostart -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxDTrace -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/vbox-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/LaunchDaemons/org.virtualbox.startup.plist -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/LaunchDaemons/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxDrv.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxUSB.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxNetFlt.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxNetAdp.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
-
-### Parallels Desktop on macOS
-
--w /usr/local/bin/prl_convert -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prl_disk_tool -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prl_perf_ctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlcore2dmp -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlexec -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlsrvctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Preferences/Parallels -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
-
-### qemu on macOS
-
--w /usr/local/bin/qemu-edid -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-io -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-nbd -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-system-x86_64 -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
 
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
