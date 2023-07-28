@@ -48,8 +48,7 @@
 ## Audit the audit logs
 ### Successful and unsuccessful attempts to read information from the audit records
 -w /var/log/audit/ -p wra -k auditlog
--w /var/log/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
--w /var/audit/ -p wra -k T1005_Data_From_Local_System_audit_log
+-w /var/audit/ -p wra -k auditlog
 
 ## Auditd configuration
 ### Modifications to audit configuration that occur while the audit collection functions are operating
@@ -65,11 +64,11 @@
 
 ## Access to all audit trails
 
--a always,exit -F path=/usr/sbin/ausearch -F perm=x -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aureport -F perm=x -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aulast -F perm=x -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -k T1005_Data_From_Local_System_audit_log
--a always,exit -F path=/usr/sbin/auvirt -F perm=x -k T1005_Data_From_Local_System_audit_log
+-a always,exit -F path=/usr/sbin/ausearch -F perm=x -k audittools
+-a always,exit -F path=/usr/sbin/aureport -F perm=x -k audittools
+-a always,exit -F path=/usr/sbin/aulast -F perm=x -k audittools
+-a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -k audittools
+-a always,exit -F path=/usr/sbin/auvirt -F perm=x -k audittools
 
 # Filters ---------------------------------------------------------------------
 
@@ -265,13 +264,13 @@
 -w /usr/lib/systemd -p wa -k systemd
 
 ## https://systemd.network/systemd.generator.html
--w /etc/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
--w /usr/local/lib/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
--w /usr/lib/systemd/system-generators -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /etc/systemd/system-generators/ -p wa -k systemd_generator
+-w /usr/local/lib/systemd/system-generators/ -p wa -k systemd_generator
+-w /usr/lib/systemd/system-generators -p wa -k systemd_generator
 
--w /etc/systemd/user-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
--w /usr/local/lib/systemd/user-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
--w /lib/systemd/system-generators/ -p wa -k T1543_Create_or_Modify_System_Process_systemd_generator
+-w /etc/systemd/user-generators/ -p wa -k systemd_generator
+-w /usr/local/lib/systemd/user-generators/ -p wa -k systemd_generator
+-w /lib/systemd/system-generators/ -p wa -k systemd_generator
 
 ## SELinux events that modify the system's Mandatory Access Controls (MAC)
 -w /etc/selinux/ -p wa -k mac_policy
@@ -358,48 +357,48 @@
 -w /usr/bin/wireshark -p x -k susp_activity
 -w /usr/bin/tshark -p x -k susp_activity
 -w /usr/bin/rawshark -p x -k susp_activity
--w /usr/bin/rdesktop -p x -k T1219_Remote_Access_Tools
--w /usr/local/bin/rdesktop -p x -k T1219_Remote_Access_Tools
+-w /usr/bin/rdesktop -p x -k susp_activity
+-w /usr/local/bin/rdesktop -p x -k susp_activity
 -w /usr/bin/wlfreerdp -p x -k susp_activity
--w /usr/bin/xfreerdp -p x -k T1219_Remote_Access_Tools
--w /usr/local/bin/xfreerdp -p x -k T1219_Remote_Access_Tools
+-w /usr/bin/xfreerdp -p x -k susp_activity
+-w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
 ## T1002 Data Compressed
 
--w /usr/bin/zip -p x -k T1002_Data_Compressed
--w /usr/bin/gzip -p x -k T1002_Data_Compressed
--w /usr/bin/tar -p x -k T1002_Data_Compressed
--w /usr/bin/bzip2 -p x -k T1002_Data_Compressed
+-w /usr/bin/zip -p x -k Data_Compressed
+-w /usr/bin/gzip -p x -k Data_Compressed
+-w /usr/bin/tar -p x -k Data_Compressed
+-w /usr/bin/bzip2 -p x -k Data_Compressed
 
--w /usr/bin/lzip -p x -k T1002_Data_Compressed
--w /usr/local/bin/lzip -p x -k T1002_Data_Compressed
+-w /usr/bin/lzip -p x -k Data_Compressed
+-w /usr/local/bin/lzip -p x -k Data_Compressed
 
--w /usr/bin/lz4 -p x -k T1002_Data_Compressed
--w /usr/local/bin/lz4 -p x -k T1002_Data_Compressed
+-w /usr/bin/lz4 -p x -k Data_Compressed
+-w /usr/local/bin/lz4 -p x -k Data_Compressed
 
--w /usr/bin/lzop -p x -k T1002_Data_Compressed
--w /usr/local/bin/lzop -p x -k T1002_Data_Compressed
+-w /usr/bin/lzop -p x -k Data_Compressed
+-w /usr/local/bin/lzop -p x -k Data_Compressed
 
--w /usr/bin/plzip -p x -k T1002_Data_Compressed
--w /usr/local/bin/plzip -p x -k T1002_Data_Compressed
+-w /usr/bin/plzip -p x -k Data_Compressed
+-w /usr/local/bin/plzip -p x -k Data_Compressed
 
--w /usr/bin/pbzip2 -p x -k T1002_Data_Compressed
--w /usr/local/bin/pbzip2 -p x -k T1002_Data_Compressed
+-w /usr/bin/pbzip2 -p x -k Data_Compressed
+-w /usr/local/bin/pbzip2 -p x -k Data_Compressed
 
--w /usr/bin/lbzip2 -p x -k T1002_Data_Compressed
--w /usr/local/bin/lbzip2 -p x -k T1002_Data_Compressed
+-w /usr/bin/lbzip2 -p x -k Data_Compressed
+-w /usr/local/bin/lbzip2 -p x -k Data_Compressed
 
--w /usr/bin/pixz -p x -k T1002_Data_Compressed
--w /usr/local/bin/pixz -p x -k T1002_Data_Compressed
+-w /usr/bin/pixz -p x -k Data_Compressed
+-w /usr/local/bin/pixz -p x -k Data_Compressed
 
--w /usr/bin/pigz -p x -k T1002_Data_Compressed
--w /usr/local/bin/pigz -p x -k T1002_Data_Compressed
--w /usr/bin/unpigz -p x -k T1002_Data_Compressed
--w /usr/local/bin/unpigz -p x -k T1002_Data_Compressed
+-w /usr/bin/pigz -p x -k Data_Compressed
+-w /usr/local/bin/pigz -p x -k Data_Compressed
+-w /usr/bin/unpigz -p x -k Data_Compressed
+-w /usr/local/bin/unpigz -p x -k Data_Compressed
 
--w /usr/bin/zstd -p x -k T1002_Data_Compressed
--w /usr/local/bin/zstd -p x -k T1002_Data_Compressed
+-w /usr/bin/zstd -p x -k Data_Compressed
+-w /usr/local/bin/zstd -p x -k Data_Compressed
 
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
@@ -492,11 +491,11 @@
 # Socket Creations
 # will catch both IPv4 and IPv6
 
--a always,exit -F arch=b32 -S socket -F a0=2  -k T1011_Exfiltration_Over_Other_Network_Medium
--a always,exit -F arch=b64 -S socket -F a0=2  -k T1011_Exfiltration_Over_Other_Network_Medium
+-a always,exit -F arch=b32 -S socket -F a0=2  -k network_socket_created
+-a always,exit -F arch=b64 -S socket -F a0=2  -k network_socket_created
 
--a always,exit -F arch=b32 -S socket -F a0=10 -k T1011_Exfiltration_Over_Other_Network_Medium
--a always,exit -F arch=b64 -S socket -F a0=10 -k T1011_Exfiltration_Over_Other_Network_Medium
+-a always,exit -F arch=b32 -S socket -F a0=10 -k network_socket_created
+-a always,exit -F arch=b64 -S socket -F a0=10 -k network_socket_created
 
 # Software Management ---------------------------------------------------------
 
@@ -523,39 +522,39 @@
 -w /usr/bin/snap -p x -k software_mgmt
 
 # PIP(3) (Python installs)
--w /usr/bin/pip -p x -k T1072_third_party_software
--w /usr/local/bin/pip -p x -k T1072_third_party_software
--w /usr/bin/pip3 -p x -k T1072_third_party_software
--w /usr/local/bin/pip3 -p x -k T1072_third_party_software
--w /usr/bin/pipx -p x -k T1072_third_party_software
--w /usr/local/bin/pipx -p x -k T1072_third_party_software
+-w /usr/bin/pip -p x -k third_party_software_mgmt
+-w /usr/local/bin/pip -p x -k third_party_software_mgmt
+-w /usr/bin/pip3 -p x -k third_party_software_mgmt
+-w /usr/local/bin/pip3 -p x -k third_party_software_mgmt
+-w /usr/bin/pipx -p x -k third_party_software_mgmt
+-w /usr/local/bin/pipx -p x -k third_party_software_mgmt
 
 # npm
 ## T1072 third party software
 ## https://www.npmjs.com
 ## https://docs.npmjs.com/cli/v6/commands/npm-audit
--w /usr/bin/npm -p x -k T1072_third_party_software
+-w /usr/bin/npm -p x -k third_party_software_mgmt
 
 # Comprehensive Perl Archive Network (CPAN) (CPAN installs)
 ## T1072 third party software
 ## https://www.cpan.org
--w /usr/bin/cpan -p x -k T1072_third_party_software
+-w /usr/bin/cpan -p x -k third_party_software_mgmt
 
 # Ruby (RubyGems installs)
 ## T1072 third party software
 ## https://rubygems.org
--w /usr/bin/gem -p x -k T1072_third_party_software
+-w /usr/bin/gem -p x -k third_party_software_mgmt
 
 # LuaRocks (Lua installs)
 ## T1072 third party software
 ## https://luarocks.org
--w /usr/bin/luarocks -p x -k T1072_third_party_software
+-w /usr/bin/luarocks -p x -k third_party_software_mgmt
 
 # Pacman (Arch Linux)
 ## https://wiki.archlinux.org/title/Pacman
 ## T1072 third party software
--w /etc/pacman.conf -p x -k T1072_third_party_software
--w /etc/pacman.d -p x -k T1072_third_party_software
+-w /etc/pacman.conf -p x -k third_party_software_mgmt
+-w /etc/pacman.d -p x -k third_party_software_mgmt
    
 # Special Software ------------------------------------------------------------
 
@@ -580,62 +579,62 @@
 -w /etc/otter -p wa -k soft_otter
 
 ## T1081 Credentials In Files
--w /usr/bin/grep -p x -k T1081_Credentials_In_Files
--w /usr/bin/egrep -p x -k T1081_Credentials_In_Files
--w /usr/bin/ugrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/grep -p x -k string_search
+-w /usr/bin/egrep -p x -k string_search
+-w /usr/bin/ugrep -p x -k string_search
 ### macOS
--w /usr/local/bin/grep -p x -k T1081_Credentials_In_Files
--w /usr/local/bin/egrep -p x -k T1081_Credentials_In_Files
--w /usr/local/bin/ugrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/grep -p x -k string_search
+-w /usr/local/bin/egrep -p x -k string_search
+-w /usr/local/bin/ugrep -p x -k string_search
 
 ### https://github.com/tmbinc/bgrep
--w /usr/bin/bgrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/bgrep -p x -k string_search
 ### macOS
--w /usr/local/bin/bgrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/bgrep -p x -k string_search
 
 ### https://github.com/BurntSushi/ripgrep
--w /usr/bin/rg -p x -k T1081_Credentials_In_Files
+-w /usr/bin/rg -p x -k string_search
 ### macOS
--w /usr/local/bin/rg -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/rg -p x -k string_search
 
 ### https://github.com/awgn/cgrep
 
--w /usr/bin/cgrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/cgrep -p x -k string_search
 ### macOS
--w /usr/local/bin/cgrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/cgrep -p x -k string_search
 
 ### https://github.com/jpr5/ngrep
--w /usr/bin/ngrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/ngrep -p x -k string_search
 ### macOS
--w /usr/local/bin/ngrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/ngrep -p x -k string_search
 
 ### https://github.com/vrothberg/vgrep
--w /usr/bin/vgrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/vgrep -p x -k string_search
 ### macOS
--w /usr/local/bin/vgrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/vgrep -p x -k string_search
 
 ### https://github.com/monochromegane/the_platinum_searcher
--w /usr/bin/pt -p x -k T1081_Credentials_In_Files
+-w /usr/bin/pt -p x -k string_search
 ### macOS
--w /usr/local/bin/pt -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/pt -p x -k string_search
 
 ### https://github.com/gvansickle/ucg
--w /usr/bin/ucg -p x -k T1081_Credentials_In_Files
+-w /usr/bin/ucg -p x -k string_search
 ### macOS
--w /usr/local/bin/ucg -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/ucg -p x -k string_search
 
 ### https://github.com/ggreer/the_silver_searcher
--w /usr/bin/ag -p x -k T1081_Credentials_In_Files
+-w /usr/bin/ag -p x -k string_search
 ### macOS
--w /usr/local/bin/ag -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/ag -p x -k string_search
 
 ### https://github.com/beyondgrep/ack3
 ### https://beyondgrep.com
--w /usr/bin/ack -p x -k T1081_Credentials_In_Files
--w /usr/local/bin/ack -p x -k T1081_Credentials_In_Files
--w /usr/bin/semgrep -p x -k T1081_Credentials_In_Files
+-w /usr/bin/ack -p x -k string_search
+-w /usr/local/bin/ack -p x -k string_search
+-w /usr/bin/semgrep -p x -k string_search
 ### macOS
--w /usr/local/bin/semgrep -p x -k T1081_Credentials_In_Files
+-w /usr/local/bin/semgrep -p x -k string_search
 
 ## Docker
 -w /usr/bin/dockerd -k docker
@@ -660,42 +659,42 @@
 
 #### VirtualBox on macOS
 
--w /usr/local/bin/VirtualBox -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VirtualBoxVM -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxManage -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxVRDP -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxHeadless -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/vboxwebsrv -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxBugReport -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxBalloonCtrl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxAutostart -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/VBoxDTrace -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/vbox-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/LaunchDaemons/org.virtualbox.startup.plist -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/LaunchDaemons/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxDrv.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxUSB.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxNetFlt.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Application Support/VirtualBox/VBoxNetAdp.kext/ -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/VirtualBox -p x -k virt_tool
+-w /usr/local/bin/VirtualBoxVM -p x -k virt_tool
+-w /usr/local/bin/VBoxManage -p x -k virt_tool
+-w /usr/local/bin/VBoxVRDP -p x -k virt_tool
+-w /usr/local/bin/VBoxHeadless -p x -k virt_tool
+-w /usr/local/bin/vboxwebsrv -p x -k virt_tool
+-w /usr/local/bin/VBoxBugReport -p x -k virt_tool
+-w /usr/local/bin/VBoxBalloonCtrl -p x -k virt_tool
+-w /usr/local/bin/VBoxAutostart -p x -k virt_tool
+-w /usr/local/bin/VBoxDTrace -p x -k virt_tool
+-w /usr/local/bin/vbox-img -p x -k virt_tool
+-w /Library/LaunchDaemons/org.virtualbox.startup.plist -p x -k virt_tool
+-w /Library/Application Support/VirtualBox/LaunchDaemons/ -p x -k virt_tool
+-w /Library/Application Support/VirtualBox/VBoxDrv.kext/ -p x -k virt_tool
+-w /Library/Application Support/VirtualBox/VBoxUSB.kext/ -p x -k virt_tool
+-w /Library/Application Support/VirtualBox/VBoxNetFlt.kext/ -p x -k virt_tool
+-w /Library/Application Support/VirtualBox/VBoxNetAdp.kext/ -p x -k virt_tool
 
 ### Parallels Desktop on macOS
 
--w /usr/local/bin/prl_convert -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prl_disk_tool -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prl_perf_ctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlcore2dmp -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlexec -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/prlsrvctl -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /Library/Preferences/Parallels -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/prl_convert -p x -k virt_tool
+-w /usr/local/bin/prl_disk_tool -p x -k virt_tool
+-w /usr/local/bin/prl_perf_ctl -p x -k virt_tool
+-w /usr/local/bin/prlcore2dmp -p x -k virt_tool
+-w /usr/local/bin/prlctl -p x -k virt_tool
+-w /usr/local/bin/prlexec -p x -k virt_tool
+-w /usr/local/bin/prlsrvctl -p x -k virt_tool
+-w /Library/Preferences/Parallels -p x -k virt_tool
 
 ### qemu on macOS
 
--w /usr/local/bin/qemu-edid -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-img -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-io -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-nbd -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
--w /usr/local/bin/qemu-system-x86_64 -p x -k T1497_Virtualization_Sandbox_Evasion_System_Checks
+-w /usr/local/bin/qemu-edid -p x -k virt_tool
+-w /usr/local/bin/qemu-img -p x -k virt_tool
+-w /usr/local/bin/qemu-io -p x -k virt_tool
+-w /usr/local/bin/qemu-nbd -p x -k virt_tool
+-w /usr/local/bin/qemu-system-x86_64 -p x -k virt_tool
 
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
@@ -704,34 +703,34 @@
 # /usr/include/linux/ipc.h
 
 ## msgctl
-#-a always,exit -S ipc -F a0=14 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=14 -k Inter-Process_Communication
 ## msgget
-#-a always,exit -S ipc -F a0=13 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=13 -k Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S msgctl -k T1559_Inter-Process_Communication
--a always,exit -F arch=b64 -S msgget -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S msgctl -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S msgget -k Inter-Process_Communication
 
 ## semctl
-#-a always,exit -S ipc -F a0=3 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=3 -k Inter-Process_Communication
 ## semget
-#-a always,exit -S ipc -F a0=2 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=2 -k Inter-Process_Communication
 ## semop
-#-a always,exit -S ipc -F a0=1 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=1 -k Inter-Process_Communication
 ## semtimedop
-#-a always,exit -S ipc -F a0=4 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=4 -k Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S semctl -k T1559_Inter-Process_Communication
--a always,exit -F arch=b64 -S semget -k T1559_Inter-Process_Communication
--a always,exit -F arch=b64 -S semop -k T1559_Inter-Process_Communication
--a always,exit -F arch=b64 -S semtimedop -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S semctl -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S semget -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S semop -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S semtimedop -k Inter-Process_Communication
 
 ## shmctl
-#-a always,exit -S ipc -F a0=24 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=24 -k Inter-Process_Communication
 ## shmget
-#-a always,exit -S ipc -F a0=23 -k T1559_Inter-Process_Communication
+#-a always,exit -S ipc -F a0=23 -k Inter-Process_Communication
 ## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S shmctl -k T1559_Inter-Process_Communication
--a always,exit -F arch=b64 -S shmget -k T1559_Inter-Process_Communication
+-a always,exit -F arch=b64 -S shmctl -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S shmget -k Inter-Process_Communication
 
 # High Volume Events ----------------------------------------------------------
 
