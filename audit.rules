@@ -85,27 +85,19 @@
 -a never,exit -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
--a never,exit -F arch=b32 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
--a never,exit -F arch=b64 -S adjtimex -F auid=unset -F uid=chrony -F subj_type=chronyd_t
+-a never,exit -F arch=b64 -S adjtimex -F auid=-1 -F uid=chrony -F subj_type=chronyd_t
 
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
 
-## VMware tools
--a never,exit -F arch=b32 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
--a never,exit -F arch=b64 -S fork -F success=0 -F path=/usr/lib/vmware-tools -F subj_type=initrc_t -F exit=-2
-
--a exit,never -F arch=b32 -S all -F exe=/usr/bin/vmtoolsd
+## Open VM Tools
 -a exit,never -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
 
 ## High Volume Event Filter (especially on Linux Workstations)
--a never,exit -F arch=b32 -F dir=/dev/shm -k sharedmemaccess
 -a never,exit -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
--a never,exit -F arch=b32 -F dir=/var/lock/lvm -k locklvm
 -a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
 ## FileBeat
--a never,exit -F arch=b32 -F path=/opt/filebeat -k filebeat
 -a never,exit -F arch=b64 -F path=/opt/filebeat -k filebeat
 
 ## More information on how to filter events
@@ -122,7 +114,6 @@
 -a always,exit -F perm=x -F auid!=-1 -F path=/sbin/modprobe -k modules
 -a always,exit -F perm=x -F auid!=-1 -F path=/sbin/rmmod -k modules
 -a always,exit -F arch=b64 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
--a always,exit -F arch=b32 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
 
 ## Modprobe configuration
 -w /etc/modprobe.conf -p wa -k modprobe
@@ -130,15 +121,12 @@
 
 ## KExec usage (all actions)
 -a always,exit -F arch=b64 -S kexec_load -k KEXEC
--a always,exit -F arch=b32 -S sys_kexec_load -k KEXEC
 
 ## Special files
--a always,exit -F arch=b32 -S mknod -S mknodat -k specialfiles
 -a always,exit -F arch=b64 -S mknod -S mknodat -k specialfiles
 
 ## Mount operations (only attributable)
 -a always,exit -F arch=b64 -S mount -S umount2 -F auid!=-1 -k mount
--a always,exit -F arch=b32 -S mount -S umount -S umount2 -F auid!=-1 -k mount
 
 ### NFS mount
 -a always,exit -F path=/sbin/mount.nfs -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
@@ -146,10 +134,8 @@
 
 ## Change swap (only attributable)
 -a always,exit -F arch=b64 -S swapon -S swapoff -F auid!=-1 -k swap
--a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=-1 -k swap
 
 ## Time
--a always,exit -F arch=b32 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
 -a always,exit -F arch=b64 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
 ### Local time zone
 -w /etc/localtime -p wa -k localtime
@@ -201,22 +187,17 @@
 
 ## Network Environment
 ### Changes to hostname
--a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_modifications
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_modifications
 
 ### Detect Remote Shell Use
--a always,exit -F arch=b32 -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
 -a always,exit -F arch=b64 -F exe=/bin/bash -F success=1 -S connect -k "remote_shell"
--a always,exit -F arch=b32 -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
 -a always,exit -F arch=b64 -F exe=/usr/bin/bash -F success=1 -S connect -k "remote_shell"
 
 ### Successful IPv4 Connections
 -a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4
--a always,exit -F arch=b32 -S connect -F a2=16 -F success=1 -F key=network_connect_4
 
 ### Successful IPv6 Connections
 -a always,exit -F arch=b64 -S connect -F a2=28 -F success=1 -F key=network_connect_6
--a always,exit -F arch=b32 -S connect -F a2=28 -F success=1 -F key=network_connect_6
 
 ### Changes to other files
 -w /etc/hosts -p wa -k network_modifications
@@ -292,8 +273,6 @@
 ## Process ID change (switching accounts) applications
 -w /bin/su -p x -k priv_esc
 -w /usr/bin/sudo -p x -k priv_esc
--w /etc/sudoers -p rw -k priv_esc
--w /etc/sudoers.d -p rw -k priv_esc
 
 ## Power state
 -w /sbin/shutdown -p x -k power
@@ -307,19 +286,6 @@
 -w /var/log/wtmp -p wa -k session
 
 ## Discretionary Access Control (DAC) modifications
--a always,exit -F arch=b32 -S chmod -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S chown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fchmod -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fchown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fchownat -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S fsetxattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S lchown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S lsetxattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S removexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b32 -S setxattr -F auid>=1000 -F auid!=-1 -k perm_mod
 -a always,exit -F arch=b64 -S chmod  -F auid>=1000 -F auid!=-1 -k perm_mod
 -a always,exit -F arch=b64 -S chown -F auid>=1000 -F auid!=-1 -k perm_mod
 -a always,exit -F arch=b64 -S fchmod -F auid>=1000 -F auid!=-1 -k perm_mod
@@ -453,7 +419,6 @@
 
 # Web Server Actvity
 ## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
--a always,exit -F arch=b32 -S execve -F euid=33 -k detect_execve_www
 -a always,exit -F arch=b64 -S execve -F euid=33 -k detect_execve_www
 
 ### https://clustershell.readthedocs.io/
@@ -483,13 +448,9 @@
 ## Injection
 ### These rules watch for code injection by the ptrace facility.
 ### This could indicate someone trying to do something bad or just debugging
--a always,exit -F arch=b32 -S ptrace -F a0=0x4 -k code_injection
 -a always,exit -F arch=b64 -S ptrace -F a0=0x4 -k code_injection
--a always,exit -F arch=b32 -S ptrace -F a0=0x5 -k data_injection
 -a always,exit -F arch=b64 -S ptrace -F a0=0x5 -k data_injection
--a always,exit -F arch=b32 -S ptrace -F a0=0x6 -k register_injection
 -a always,exit -F arch=b64 -S ptrace -F a0=0x6 -k register_injection
--a always,exit -F arch=b32 -S ptrace -k tracing
 -a always,exit -F arch=b64 -S ptrace -k tracing
 
 ## Anonymous File Creation
@@ -497,7 +458,6 @@
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
 ### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
--a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
@@ -760,30 +720,22 @@
 -w /bin/ksh -p x -k susp_shell
 
 ## Root command executions
--a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
--a always,exit -F arch=b32 -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k rootcmd
+-a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=-1 -S execve -k rootcmd
 
 ## File Deletion Events by User
--a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
 -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
 
 ## File Access
 ### Unauthorized Access (unsuccessful)
--a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k file_access
--a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k file_access
 -a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k file_access
 -a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k file_access
 
 ### Unsuccessful Creation
--a always,exit -F arch=b32 -S creat,link,mknod,mkdir,symlink,mknodat,linkat,symlinkat -F exit=-EACCES -k file_creation
 -a always,exit -F arch=b64 -S mkdir,creat,link,symlink,mknod,mknodat,linkat,symlinkat -F exit=-EACCES -k file_creation
--a always,exit -F arch=b32 -S link,mkdir,symlink,mkdirat -F exit=-EPERM -k file_creation
 -a always,exit -F arch=b64 -S mkdir,link,symlink,mkdirat -F exit=-EPERM -k file_creation
 
 ### Unsuccessful Modification
--a always,exit -F arch=b32 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EACCES -k file_modification
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EACCES -k file_modification
--a always,exit -F arch=b32 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EPERM -k file_modification
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EPERM -k file_modification
 
 ## 32bit API Exploitation
