@@ -140,6 +140,10 @@
 -a always,exit -F arch=b64 -S mount -S umount2 -F auid!=-1 -k mount
 -a always,exit -F arch=b32 -S mount -S umount -S umount2 -F auid!=-1 -k mount
 
+### NFS mount
+-a always,exit -F path=/sbin/mount.nfs -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/sbin/mount.nfs -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+
 ## Change swap (only attributable)
 -a always,exit -F arch=b64 -S swapon -S swapoff -F auid!=-1 -k swap
 -a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=-1 -k swap
