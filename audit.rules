@@ -417,6 +417,10 @@
 -w /usr/sbin/traceroute -p x -k sbin_susp
 -w /usr/sbin/ufw -p x -k sbin_susp
 
+### kde4
+-a always,exit -F path=/usr/libexec/kde4/kpac_dhcp_helper -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/libexec/kde4/kdesud -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
+
 ## dbus-send invocation
 ### may indicate privilege escalation CVE-2021-3560
 -w /usr/bin/dbus-send -p x -k dbus_send
