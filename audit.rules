@@ -403,8 +403,8 @@
 -w /usr/bin/gdbus -p x -k gdubs_call
 
 ### dbus
--a always,exit -F path=/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 
 ## pkexec invocation
 ### may indicate privilege escalation CVE-2021-4034
