@@ -334,6 +334,20 @@
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
+### uftp
+### https://sourceforge.net/projects/uftp-multicast/
+### UFTP is an encrypted multicast file transfer program, designed to securely, reliably, 
+### and efficiently transfer files to multiple receivers simultaneously.
+### FTP also has the capability to communicate over disjoint networks separated by one or 
+### more firewalls (NAT traversal) and without full end-to-end multicast capability 
+### (multicast tunneling) through the use of a UFTP proxy server.
+### T1133_External_Remote_Services
+-w /usr/bin/uftp -p x -k susp_activity
+-w /usr/sbin/uftp -p x -k susp_activity
+
+-w /lib/systemd/system/uftp.service -k susp_activity
+-w /usr/lib/systemd/system/uftp.service -k susp_activity
+
 ## sssd
 -a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
