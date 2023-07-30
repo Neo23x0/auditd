@@ -347,9 +347,9 @@
 -w /usr/sbin/in.tftpd -p x -k susp_activity
 
 -w /lib/systemd/system/atftpd.service -k susp_activity
--w /lib/systemd/system/atftpd.service -k susp_activity
+-w /usr/lib/systemd/system/atftpd.service -k susp_activity
 
--w /usr/lib/systemd/system/atftpd.socket -k susp_activity
+-w /lib/systemd/system/atftpd.socket -k susp_activity
 -w /usr/lib/systemd/system/atftpd.socket -k susp_activity
 
 ## sssd
