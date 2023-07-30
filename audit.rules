@@ -334,6 +334,33 @@
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
+### ncftp
+### https://www.ncftp.com
+### T1133_External_Remote_Services
+-w /usr/bin/ncftp3 -p x -k susp_activity
+-w /usr/sbin/ncftp3 -p x -k susp_activity
+
+-w /usr/bin/ncftpbatch -p x -k susp_activity
+-w /usr/sbin/ncftpbatch -p x -k susp_activity
+
+-w /usr/bin/ncftpbookmarks -p x -k susp_activity
+-w /usr/sbin/ncftpbookmarks -p x -k susp_activity
+
+-w /usr/bin/ncftpbatch -p x -k susp_activity
+-w /usr/sbin/ncftpbatch -p x -k susp_activity
+
+-w /usr/bin/ncftpget -p x -k susp_activity
+-w /usr/sbin/ncftpget -p x -k susp_activity
+
+-w /usr/bin/ncftpls -p x -k susp_activity
+-w /usr/sbin/ncftpls -p x -k susp_activity
+
+-w /usr/bin/ncftpput -p x -k susp_activity
+-w /usr/sbin/ncftpput -p x -k susp_activity
+
+-w /usr/bin/ncftpspooler -p x -k susp_activity
+-w /usr/sbin/ncftpspooler -p x -k susp_activity
+
 ## sssd
 -a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
