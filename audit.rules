@@ -99,7 +99,7 @@
 -a exit,never -F arch=b32 -S all -F exe=/usr/bin/vmtoolsd
 -a exit,never -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
 
-### CentOS
+### Red Hat based systems
 -a exit,never -F arch=b32 -S fork -F success=0 -F path=/etc/vmware-tools -F subj_type=initrc_t -F exit=-2
 -a exit,never -F arch=b64 -S fork -F success=0 -F path=/etc/vmware-tools -F subj_type=initrc_t -F exit=-2
 
