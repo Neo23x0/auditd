@@ -333,6 +333,7 @@
 -w /usr/bin/xfreerdp -p x -k susp_activity
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
+-w /usr/bin/systemd-detect-virt -p x -k susp_activity
 
 ## sssd
 -a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
