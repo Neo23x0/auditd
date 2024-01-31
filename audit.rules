@@ -237,8 +237,11 @@
 -w /etc/exim4/ -p wa -k mail
 
 ## SSH configuration
--w /etc/ssh/sshd_config -k sshd
--w /etc/ssh/sshd_config.d -k sshd
+-w /etc/ssh/sshd_config -p wa -k sshd
+-w /etc/ssh/sshd_config.d/ -p wa -k sshd
+-w /etc/ssh/ssh_config -p wa -k sshd
+-w /etc/ssh/ssh_config.d/ -p wa -k sshd
+
 
 ## root ssh key tampering
 -w /root/.ssh -p wa -k rootkey
