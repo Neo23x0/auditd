@@ -491,10 +491,14 @@
 -w /usr/bin/dpkg -p x -k software_mgmt
 -w /usr/bin/apt -p x -k software_mgmt
 -w /usr/bin/apt-add-repository -p x -k software_mgmt
+-w /usr/bin/apt-config -p x -k software_mgmt
 -w /usr/bin/apt-get -p x -k software_mgmt
+-w /usr/bin/apt-key -p x -k software_mgmt
 -w /usr/bin/aptitude -p x -k software_mgmt
 -w /usr/bin/wajig -p x -k software_mgmt
 -w /usr/bin/snap -p x -k software_mgmt
+
+-w /etc/apt/listchanges.conf -p wa -k T1072_Third_Party_Software
 
 # PIP(3) (Python installs)
 -w /usr/bin/pip -p x -k third_party_software_mgmt
