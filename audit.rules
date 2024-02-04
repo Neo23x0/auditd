@@ -334,12 +334,19 @@
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
-## sssd
--a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/ldap_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/selinux_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/proxy_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+## System Security Services Daemon (SSSD)
+### https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system-level_authentication_guide/configuring_services
+### https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/configuring_authentication_and_authorization_in_rhel/index
+
+-w /etc/nsswitch.conf -p wa -k T1078_Valid_Accounts
+-w /etc/sssd/sssd.conf -p wa -k T1078_Valid_Accounts
+-w /etc/openldap/ldap.conf -p wa -k T1078_Valid_Accounts
+
+-a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=-1 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=-1 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/libexec/sssd/ldap_child -F perm=x -F auid>=500 -F auid!=-1 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/libexec/sssd/selinux_child -F perm=x -F auid>=500 -F auid!=-1 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/libexec/sssd/proxy_child -F perm=x -F auid>=500 -F auid!=-1 -k T1078_Valid_Accounts
 
 ## T1002 Data Compressed
 
