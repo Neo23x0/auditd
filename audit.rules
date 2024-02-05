@@ -334,12 +334,48 @@
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
 
+### uftp
+### https://sourceforge.net/projects/uftp-multicast/
+### UFTP is an encrypted multicast file transfer program, designed to securely, reliably, 
+### and efficiently transfer files to multiple receivers simultaneously.
+### FTP also has the capability to communicate over disjoint networks separated by one or 
+### more firewalls (NAT traversal) and without full end-to-end multicast capability 
+### (multicast tunneling) through the use of a UFTP proxy server.
+### T1133_External_Remote_Services
+-w /usr/bin/uftp -p x -k susp_activity
+-w /usr/sbin/uftp -p x -k susp_activity
+
+-w /lib/systemd/system/uftp.service -k susp_activity
+-w /usr/lib/systemd/system/uftp.service -k susp_activity
+
+### atftpd
+### https://sourceforge.net/projects/atftp/
+### https://github.com/madmartin/atftp
+### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440. 
+### The server is multi-threaded and the client presents a friendly interface using libreadline.
+### T1133_External_Remote_Services
+-w /usr/bin/atftpd -p x -k susp_activity
+-w /usr/sbin/atftpd -p x -k susp_activity
+
+-w /usr/bin/in.tftpd -p x -k susp_activity
+-w /usr/sbin/in.tftpd -p x -k susp_activity
+
+-w /lib/systemd/system/atftpd.service -k susp_activity
+-w /usr/lib/systemd/system/atftpd.service -k susp_activity
+
+-w /lib/systemd/system/atftpd.socket -k susp_activity
+-w /usr/lib/systemd/system/atftpd.socket -k susp_activity
+
 ## sssd
 -a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/ldap_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/selinux_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/proxy_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+
+## vte-2.91
+-a always,exit -F path=/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 
 ## T1002 Data Compressed
 
@@ -402,6 +438,14 @@
 -w /usr/bin/dbus-send -p x -k dbus_send
 -w /usr/bin/gdbus -p x -k gdubs_call
 
+## setfiles
+-a always,exit -F path=/usr/bin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
+-a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
+
+### dbus
+-a always,exit -F path=/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+
 ## pkexec invocation
 ### may indicate privilege escalation CVE-2021-4034
 -w /usr/bin/pkexec -p x -k pkexec
@@ -420,6 +464,10 @@
 ### https://gtfobins.github.io/gtfobins/wish/
 -w /bin/wish -p x -k susp_shell
 -w /usr/bin/wish -p x -k susp_shell
+
+### https://gtfobins.github.io/gtfobins/yash/
+-w /bin/yash -p x -k susp_shell
+-w /usr/bin/yash -p x -k susp_shell
 
 # Web Server Actvity
 ## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
@@ -465,7 +513,7 @@
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
--a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k power_abuse
+-a always,exit -F dir=/home -F auid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k power_abuse
 
 # Socket Creations
 # will catch both IPv4 and IPv6
