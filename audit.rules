@@ -341,6 +341,10 @@
 -a always,exit -F path=/usr/libexec/sssd/selinux_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 -a always,exit -F path=/usr/libexec/sssd/proxy_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 
+## vte-2.91
+-a always,exit -F path=/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+
 ## T1002 Data Compressed
 
 -w /usr/bin/zip -p x -k Data_Compressed
