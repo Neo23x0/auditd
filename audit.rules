@@ -461,6 +461,10 @@
 -w /bin/open -p x -k susp_shell
 -w /bin/rbash -p x -k susp_shell
 
+### https://gtfobins.github.io/gtfobins/wish/
+-w /bin/wish -p x -k susp_shell
+-w /usr/bin/wish -p x -k susp_shell
+
 ### https://gtfobins.github.io/gtfobins/yash/
 -w /bin/yash -p x -k susp_shell
 -w /usr/bin/yash -p x -k susp_shell
