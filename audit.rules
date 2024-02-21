@@ -243,6 +243,19 @@
 ## root ssh key tampering
 -w /root/.ssh -p wa -k rootkey
 
+### dropbear
+-a always,exit -F arch=b32 -F dir=/etc/dropbear/ -F perm=wa -F key=dropbear
+-a always,exit -F arch=b64 -F dir=/etc/dropbear/ -F perm=wa -F key=dropbear
+
+-a always,exit -F arch=b32 -F path=/etc/config/dropbear -F perm=wa -F key=dropbear
+-a always,exit -F arch=b64 -F path=/etc/config/dropbear -F perm=wa -F key=dropbear
+
+-a always,exit -F arch=b32 -F path=/etc/default/dropbear -F perm=wa -F key=dropbear
+-a always,exit -F arch=b64 -F path=/etc/default/dropbear -F perm=wa -F key=dropbear
+
+-a always,exit -F arch=b32 -F path=/lib/systemd/system/dropbear.service -F perm=wa -F key=dropbear
+-a always,exit -F arch=b64 -F path=/lib/systemd/system/dropbear.service -F perm=wa -F key=dropbear
+
 # Systemd
 -w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
