@@ -97,8 +97,31 @@
 -a never,exit -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
 -a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
 
-## FileBeat
--a never,exit -F arch=b64 -F path=/opt/filebeat -k filebeat
+## Filebeat 
+### https://www.elastic.co/guide/en/beats/filebeat/current/directory-layout.html
+
+-a never,exit -F arch=b32 -F path=/opt/filebeat -F perm=wa -F key=filebeat
+-a never,exit -F arch=b64 -F path=/opt/filebeat -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
+-a always,exit -F arch=b64 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
+-a always,exit -F arch=b64 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b64 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
+-a always,exit -F arch=b32 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
+
+### macOS
+#### https://www.elastic.co/guide/en/beats/filebeat/7.17/directory-layout.html
+-a always,exit -F arch=b32 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
+-a always,exit -F arch=b64 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat 
+-a always,exit -F arch=b64 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat  
+-a always,exit -F arch=b64 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat
 
 ## More information on how to filter events
 ### https://access.redhat.com/solutions/2482221
