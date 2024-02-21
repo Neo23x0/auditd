@@ -413,6 +413,16 @@
 -w /usr/bin/zstd -p x -k Data_Compressed
 -w /usr/local/bin/zstd -p x -k Data_Compressed
 
+### https://upx.github.io/
+-a always,exit -F arch=b32 -F path=/usr/bin/upx-ucl -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/upx-ucl -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/sbin/upx-ucl -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/sbin/upx-ucl -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/local/bin/upx-ucl -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/upx-ucl -F perm=x -F key=Data_Compressed
+
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
 -w /bin/nc.traditional -p x -k susp_activity
