@@ -413,6 +413,16 @@
 -w /usr/bin/zstd -p x -k Data_Compressed
 -w /usr/local/bin/zstd -p x -k Data_Compressed
 
+### https://www.rkeene.org/oss/dact
+-a always,exit -F arch=b32 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
+
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
 -w /bin/nc.traditional -p x -k susp_activity
