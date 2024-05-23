@@ -74,9 +74,6 @@
 
 ### We put these early because audit is a first match wins system.
 
-## Ignore SELinux AVC records
--a always,exclude -F msgtype=AVC
-
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
 
