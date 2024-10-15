@@ -521,6 +521,12 @@
 -a always,exit -F arch=b32 -S socket -F a0=10 -k network_socket_created
 -a always,exit -F arch=b64 -S socket -F a0=10 -k network_socket_created
 
+## Timestomping
+### The main purpose of this rule is to detect any attempt of timestomping.
+-a always,exit -F arch=b32 -S utimensat -F key=timestamp-changed
+-a always,exit -F arch=b64 -S utimensat -F key=timestamp-changed
+
+
 # Software Management ---------------------------------------------------------
 
 # RPM (Redhat/CentOS)
