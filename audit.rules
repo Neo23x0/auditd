@@ -74,9 +74,6 @@
 
 ### We put these early because audit is a first match wins system.
 
-## Ignore SELinux AVC records
--a always,exclude -F msgtype=AVC
-
 ## Ignore current working directory records
 -a always,exclude -F msgtype=CWD
 
@@ -94,11 +91,37 @@
 -a exit,never -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
 
 ## High Volume Event Filter (especially on Linux Workstations)
--a never,exit -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
--a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
+-a never,exit -F arch=b32 -F dir=/dev/shm/ -F key=sharedmemaccess
+-a never,exit -F arch=b64 -F dir=/dev/shm/ -F key=sharedmemaccess
 
-## FileBeat
--a never,exit -F arch=b64 -F path=/opt/filebeat -k filebeat
+-a never,exit -F arch=b32 -F dir=/var/lock/lvm/ -F key=locklvm
+-a never,exit -F arch=b64 -F dir=/var/lock/lvm/ -F key=locklvm
+
+## Filebeat 
+### https://www.elastic.co/guide/en/beats/filebeat/current/directory-layout.html
+
+-a never,exit -F arch=b32 -F path=/opt/filebeat -F perm=wa -F key=filebeat
+-a never,exit -F arch=b64 -F path=/opt/filebeat -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
+-a always,exit -F arch=b64 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
+-a always,exit -F arch=b64 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
+
+-a always,exit -F arch=b64 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
+-a always,exit -F arch=b32 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
+
+### macOS
+#### https://www.elastic.co/guide/en/beats/filebeat/7.17/directory-layout.html
+-a always,exit -F arch=b32 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
+-a always,exit -F arch=b64 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat 
+-a always,exit -F arch=b64 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat
+
+-a always,exit -F arch=b32 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat  
+-a always,exit -F arch=b64 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat
 
 ## More information on how to filter events
 ### https://access.redhat.com/solutions/2482221
@@ -423,6 +446,16 @@
 -a always,exit -F arch=b32 -F path=/usr/local/bin/upx-ucl -F perm=x -F key=Data_Compressed
 -a always,exit -F arch=b64 -F path=/usr/local/bin/upx-ucl -F perm=x -F key=Data_Compressed
 
+### https://www.rkeene.org/oss/dact
+-a always,exit -F arch=b32 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
+
 ## Added to catch netcat on Ubuntu
 -w /bin/nc.openbsd -p x -k susp_activity
 -w /bin/nc.traditional -p x -k susp_activity
@@ -479,7 +512,7 @@
 -w /bin/yash -p x -k susp_shell
 -w /usr/bin/yash -p x -k susp_shell
 
-# Web Server Actvity
+# Web Server Activity
 ## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
 -a always,exit -F arch=b64 -S execve -F euid=33 -k detect_execve_www
 
@@ -523,7 +556,7 @@
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
--a always,exit -F dir=/home -F auid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k power_abuse
+-a always,exit -F dir=/home -F uid=0 -F auid>=1000 -F auid!=-1 -C auid!=obj_uid -k power_abuse
 
 # Socket Creations
 # will catch both IPv4 and IPv6
@@ -619,59 +652,69 @@
 -w /usr/bin/grep -p x -k string_search
 -w /usr/bin/egrep -p x -k string_search
 -w /usr/bin/ugrep -p x -k string_search
-### macOS
--w /usr/local/bin/grep -p x -k string_search
--w /usr/local/bin/egrep -p x -k string_search
--w /usr/local/bin/ugrep -p x -k string_search
 
 ### https://github.com/tmbinc/bgrep
 -w /usr/bin/bgrep -p x -k string_search
-### macOS
--w /usr/local/bin/bgrep -p x -k string_search
 
 ### https://github.com/BurntSushi/ripgrep
 -w /usr/bin/rg -p x -k string_search
-### macOS
--w /usr/local/bin/rg -p x -k string_search
 
 ### https://github.com/awgn/cgrep
 
 -w /usr/bin/cgrep -p x -k string_search
-### macOS
--w /usr/local/bin/cgrep -p x -k string_search
 
 ### https://github.com/jpr5/ngrep
 -w /usr/bin/ngrep -p x -k string_search
-### macOS
--w /usr/local/bin/ngrep -p x -k string_search
 
 ### https://github.com/vrothberg/vgrep
 -w /usr/bin/vgrep -p x -k string_search
-### macOS
--w /usr/local/bin/vgrep -p x -k string_search
 
 ### https://github.com/monochromegane/the_platinum_searcher
 -w /usr/bin/pt -p x -k string_search
-### macOS
--w /usr/local/bin/pt -p x -k string_search
 
 ### https://github.com/gvansickle/ucg
 -w /usr/bin/ucg -p x -k string_search
-### macOS
--w /usr/local/bin/ucg -p x -k string_search
 
 ### https://github.com/ggreer/the_silver_searcher
 -w /usr/bin/ag -p x -k string_search
-### macOS
--w /usr/local/bin/ag -p x -k string_search
 
 ### https://github.com/beyondgrep/ack3
 ### https://beyondgrep.com
 -w /usr/bin/ack -p x -k string_search
 -w /usr/local/bin/ack -p x -k string_search
 -w /usr/bin/semgrep -p x -k string_search
-### macOS
--w /usr/local/bin/semgrep -p x -k string_search
+
+# CrowdStrike Falcon
+# Identify CrowdStrike Falcon Sensor updates
+-a always,exit -F arch=b32 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b64 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+
+-a always,exit -F arch=b32 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b64 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+
+# Identify CrowdStrike Falcon Sensor
+-a always,exit -F arch=b32 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
+
+# Identify CrowdStrike Falcon Agent activity
+-a always,exit -F arch=b32 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
+-a always,exit -F arch=b64 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
+
+-a always,exit -F arch=b32 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
+-a always,exit -F arch=b64 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
+
+# Identify CrowdStrike Falcon Sensor network
+-a always,exit -F arch=b32 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
+-a always,exit -F arch=b64 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
 
 ## Docker
 -w /usr/bin/dockerd -k docker
@@ -693,45 +736,6 @@
 -w /usr/bin/virtualbox -p x -k virtualbox
 -w /usr/bin/virt-manager -p x -k virt-manager
 -w /usr/bin/VBoxManage -p x -k VBoxManage
-
-#### VirtualBox on macOS
-
--w /usr/local/bin/VirtualBox -p x -k virt_tool
--w /usr/local/bin/VirtualBoxVM -p x -k virt_tool
--w /usr/local/bin/VBoxManage -p x -k virt_tool
--w /usr/local/bin/VBoxVRDP -p x -k virt_tool
--w /usr/local/bin/VBoxHeadless -p x -k virt_tool
--w /usr/local/bin/vboxwebsrv -p x -k virt_tool
--w /usr/local/bin/VBoxBugReport -p x -k virt_tool
--w /usr/local/bin/VBoxBalloonCtrl -p x -k virt_tool
--w /usr/local/bin/VBoxAutostart -p x -k virt_tool
--w /usr/local/bin/VBoxDTrace -p x -k virt_tool
--w /usr/local/bin/vbox-img -p x -k virt_tool
--w /Library/LaunchDaemons/org.virtualbox.startup.plist -p x -k virt_tool
--w /Library/Application Support/VirtualBox/LaunchDaemons/ -p x -k virt_tool
--w /Library/Application Support/VirtualBox/VBoxDrv.kext/ -p x -k virt_tool
--w /Library/Application Support/VirtualBox/VBoxUSB.kext/ -p x -k virt_tool
--w /Library/Application Support/VirtualBox/VBoxNetFlt.kext/ -p x -k virt_tool
--w /Library/Application Support/VirtualBox/VBoxNetAdp.kext/ -p x -k virt_tool
-
-### Parallels Desktop on macOS
-
--w /usr/local/bin/prl_convert -p x -k virt_tool
--w /usr/local/bin/prl_disk_tool -p x -k virt_tool
--w /usr/local/bin/prl_perf_ctl -p x -k virt_tool
--w /usr/local/bin/prlcore2dmp -p x -k virt_tool
--w /usr/local/bin/prlctl -p x -k virt_tool
--w /usr/local/bin/prlexec -p x -k virt_tool
--w /usr/local/bin/prlsrvctl -p x -k virt_tool
--w /Library/Preferences/Parallels -p x -k virt_tool
-
-### qemu on macOS
-
--w /usr/local/bin/qemu-edid -p x -k virt_tool
--w /usr/local/bin/qemu-img -p x -k virt_tool
--w /usr/local/bin/qemu-io -p x -k virt_tool
--w /usr/local/bin/qemu-nbd -p x -k virt_tool
--w /usr/local/bin/qemu-system-x86_64 -p x -k virt_tool
 
 ## Kubelet
 -w /usr/bin/kubelet -k kubelet
