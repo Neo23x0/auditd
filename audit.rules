@@ -436,6 +436,18 @@
 -w /usr/bin/zstd -p x -k Data_Compressed
 -w /usr/local/bin/zstd -p x -k Data_Compressed
 
+## gzexe
+-a always,exit -F arch=b32 -F path=/usr/bin/gzexe -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/gzexe -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/sbin/gzexe -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/sbin/gzexe -F perm=x -F key=Data_Compressed
+
+### macOS
+
+-a always,exit -F arch=b32 -F path=/usr/local/bin/gzexe -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/gzexe -F perm=x -F key=Data_Compressed
+
 ### https://www.rkeene.org/oss/dact
 -a always,exit -F arch=b32 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
 -a always,exit -F arch=b64 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
