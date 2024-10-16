@@ -638,6 +638,38 @@
 -w /usr/local/bin/ack -p x -k string_search
 -w /usr/bin/semgrep -p x -k string_search
 
+# CrowdStrike Falcon
+# Identify CrowdStrike Falcon Sensor updates
+-a always,exit -F arch=b32 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b64 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+
+-a always,exit -F arch=b32 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b64 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+
+# Identify CrowdStrike Falcon Sensor
+-a always,exit -F arch=b32 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
+
+-a always,exit -F arch=b32 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
+
+# Identify CrowdStrike Falcon Agent activity
+-a always,exit -F arch=b32 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
+-a always,exit -F arch=b64 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
+
+-a always,exit -F arch=b32 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
+-a always,exit -F arch=b64 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
+
+# Identify CrowdStrike Falcon Sensor network
+-a always,exit -F arch=b32 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
+-a always,exit -F arch=b64 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
+
 ## Docker
 -w /usr/bin/dockerd -k docker
 -w /usr/bin/docker -k docker
