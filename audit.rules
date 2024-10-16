@@ -91,8 +91,11 @@
 -a exit,never -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
 
 ## High Volume Event Filter (especially on Linux Workstations)
--a never,exit -F arch=b64 -F dir=/dev/shm -k sharedmemaccess
--a never,exit -F arch=b64 -F dir=/var/lock/lvm -k locklvm
+-a never,exit -F arch=b32 -F dir=/dev/shm/ -F key=sharedmemaccess
+-a never,exit -F arch=b64 -F dir=/dev/shm/ -F key=sharedmemaccess
+
+-a never,exit -F arch=b32 -F dir=/var/lock/lvm/ -F key=locklvm
+-a never,exit -F arch=b64 -F dir=/var/lock/lvm/ -F key=locklvm
 
 ## Filebeat 
 ### https://www.elastic.co/guide/en/beats/filebeat/current/directory-layout.html
