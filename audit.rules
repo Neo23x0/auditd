@@ -466,7 +466,7 @@
 -w /bin/yash -p x -k susp_shell
 -w /usr/bin/yash -p x -k susp_shell
 
-# Web Server Actvity
+# Web Server Activity
 ## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
 -a always,exit -F arch=b64 -S execve -F euid=33 -k detect_execve_www
 
