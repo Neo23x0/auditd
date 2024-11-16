@@ -787,6 +787,15 @@
 -w /bin/sh -p x -k susp_shell
 -w /bin/ksh -p x -k susp_shell
 
+## Files viewers for potentially sensitive files
+-w /usr/bin/cat -p x -k sensitive_file_access
+-w /usr/bin/tac -p x -k sensitive_file_access
+-w /usr/bin/less -p x -k sensitive_file_access
+-w /usr/bin/more -p x -k sensitive_file_access
+-w /usr/bin/tail -p x -k sensitive_file_access
+-w /usr/bin/head -p x -k sensitive_file_access
+-w /usr/bin/nl -p x -k sensitive_file_access
+
 ## Root command executions
 -a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=-1 -S execve -k rootcmd
 
