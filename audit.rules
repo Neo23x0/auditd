@@ -806,6 +806,14 @@
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EACCES -k file_modification
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EPERM -k file_modification
 
+
+## Monitor for creation of anonymous files in memory
+-a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
+
+## Monitor execution of in-memory files
+-a always,exit -F arch=b64 -S fexecve -F key=in_memory_execution
+
+
 ## 32bit API Exploitation
 ### If you are on a 64 bit platform, everything _should_ be running
 ### in 64 bit mode. This rule will detect any use of the 32 bit syscalls
