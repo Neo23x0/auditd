@@ -576,7 +576,13 @@
 -w /usr/bin/yum -p x -k software_mgmt
 
 # DNF (Fedora/RedHat 8/CentOS 8)
--w /usr/bin/dnf -p x -k software_mgmt
+-w /etc/dnf/dnf.conf -p x -k T1072_Third_Party_Software
+
+-w /usr/bin/dnf -p x -k T1072_Third_Party_Software
+-w /usr/sbin/dnf -p x -k T1072_Third_Party_Software
+
+-w /usr/bin/dnf-3 -p x -k T1072_Third_Party_Software
+-w /usr/sbin/dnf-3 -p x -k T1072_Third_Party_Software
 
 # YAST/Zypper/RPM (SuSE)
 -w /sbin/yast -p x -k software_mgmt
