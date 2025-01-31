@@ -527,6 +527,11 @@
 -w /bin/tmux -p x -k susp_shell
 -w /usr/local/bin/tmux -p x -k susp_shell
 
+### https://github.com/elves/elvish
+-w /bin/elvish -p x -k susp_shell
+-w /usr/bin/elvish -p x -k susp_shell
+
+
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
 -w /etc/profile -p wa -k shell_profiles
