@@ -482,6 +482,7 @@
 ### may indicate privilege escalation CVE-2021-3560
 -w /usr/bin/dbus-send -p x -k dbus_send
 -w /usr/bin/gdbus -p x -k gdubs_call
+-w /usr/bin/busctl -p x -k busctl_call
 
 ## setfiles
 -a always,exit -F path=/usr/bin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
