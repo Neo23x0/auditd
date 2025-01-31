@@ -463,11 +463,21 @@
 -w /bin/nc.traditional -p x -k susp_activity
 
 ## Sbin suspicious activity
+### iptables
 -w /sbin/iptables -p x -k sbin_susp
+-w /usr/sbin/iptables -p x -k sbin_susp
+
 -w /sbin/ip6tables -p x -k sbin_susp
 -w /sbin/ifconfig -p x -k sbin_susp
+
+### arptables
+-w /sbin/arptables -p x -k sbin_susp
 -w /usr/sbin/arptables -p x -k sbin_susp
+
+### ebtables
+-w /sbin/ebtables -p x -k sbin_susp
 -w /usr/sbin/ebtables -p x -k sbin_susp
+
 -w /sbin/xtables-nft-multi -p x -k sbin_susp
 -w /usr/sbin/nft -p x -k sbin_susp
 -w /usr/sbin/tcpdump -p x -k sbin_susp
