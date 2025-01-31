@@ -356,6 +356,7 @@
 -w /usr/bin/xfreerdp -p x -k susp_activity
 -w /usr/local/bin/xfreerdp -p x -k susp_activity
 -w /usr/bin/nmap -p x -k susp_activity
+-w /usr/bin/systemd-detect-virt -p x -k susp_activity
 
 ### uftp
 ### https://sourceforge.net/projects/uftp-multicast/
