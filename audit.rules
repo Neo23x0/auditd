@@ -496,7 +496,11 @@
 -w /usr/bin/pkexec -p x -k pkexec
 
 ## Suspicious shells
+
+### https://gtfobins.github.io/gtfobins/ash/
 -w /bin/ash -p x -k susp_shell
+-w /usr/bin/ash -p x -k susp_shell
+
 -w /bin/csh -p x -k susp_shell
 -w /bin/fish -p x -k susp_shell
 -w /bin/tcsh -p x -k susp_shell
