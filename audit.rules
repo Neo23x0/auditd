@@ -238,6 +238,9 @@
 -w /etc/init.d/ -p wa -k init
 -w /etc/init/ -p wa -k init
 
+# Monitor /etc/rc.local
+-w /etc/rc.local -p wa -k rc_local
+
 ## Library search paths
 -w /etc/ld.so.conf -p wa -k libpath
 -w /etc/ld.so.conf.d -p wa -k libpath
