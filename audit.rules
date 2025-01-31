@@ -67,7 +67,7 @@
 -a always,exit -F path=/usr/sbin/ausearch -F perm=x -k audittools
 -a always,exit -F path=/usr/sbin/aureport -F perm=x -k audittools
 -a always,exit -F path=/usr/sbin/aulast -F perm=x -k audittools
--a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -k audittools
+-a always,exit -F path=/usr/sbin/aulastlog -F perm=x -k audittools
 -a always,exit -F path=/usr/sbin/auvirt -F perm=x -k audittools
 
 # Filters ---------------------------------------------------------------------
