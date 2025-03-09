@@ -790,9 +790,9 @@
 ## Root command executions
 -a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=-1 -S execve -k rootcmd
 
-## in memory file execution
--a always,exit -F arch=b64 -F auid>=1000 -F auid!=-1 -S execveat -k Memory-Process-creation
--a always,exit -F arch=b64  -F auid>=1000 -F auid!=-1 -S execveat -k Memory-Process-creation
+## in memory file execution(https://github.com/vahidmalekk/bypass-Neo23x0-auditd-config)
+-a always,exit -F arch=b64  -F auid!=-1 -S execveat -k Memory-Process-creation
+-a always,exit -F arch=b32  -F auid!=-1 -S execveat -k Memory-Process-creation
 
 ## File Deletion Events by User
 -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
