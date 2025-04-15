@@ -593,6 +593,9 @@
 -w /usr/bin/wajig -p x -k software_mgmt
 -w /usr/bin/snap -p x -k software_mgmt
 
+#monitor apt config file which attackers can  used it for persistence 
+-w /etc/apt/apt.conf.d/ -p wa -k apt_config
+
 # PIP(3) (Python installs)
 -w /usr/bin/pip -p x -k third_party_software_mgmt
 -w /usr/local/bin/pip -p x -k third_party_software_mgmt
