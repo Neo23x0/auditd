@@ -177,6 +177,7 @@
 -w /etc/cron.weekly/ -p wa -k cron
 -w /etc/crontab -p wa -k cron
 -w /var/spool/cron/ -p wa -k cron
+-w /var/spool/cron/atjobs/ -p wa -k atjob
 
 ## User, group, password databases
 -w /etc/group -p wa -k etcgroup
