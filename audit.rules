@@ -555,6 +555,8 @@
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
 ### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
+-a always,exit -F arch=b64 -S fexecve -k fexecve_detect
+
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
