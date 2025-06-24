@@ -351,10 +351,10 @@
 
 ### uftp
 ### https://sourceforge.net/projects/uftp-multicast/
-### UFTP is an encrypted multicast file transfer program, designed to securely, reliably, 
+### UFTP is an encrypted multicast file transfer program, designed to securely, reliably,
 ### and efficiently transfer files to multiple receivers simultaneously.
-### FTP also has the capability to communicate over disjoint networks separated by one or 
-### more firewalls (NAT traversal) and without full end-to-end multicast capability 
+### FTP also has the capability to communicate over disjoint networks separated by one or
+### more firewalls (NAT traversal) and without full end-to-end multicast capability
 ### (multicast tunneling) through the use of a UFTP proxy server.
 ### T1133_External_Remote_Services
 -w /usr/bin/uftp -p x -k susp_activity
@@ -366,7 +366,7 @@
 ### atftpd
 ### https://sourceforge.net/projects/atftp/
 ### https://github.com/madmartin/atftp
-### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440. 
+### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440.
 ### The server is multi-threaded and the client presents a friendly interface using libreadline.
 ### T1133_External_Remote_Services
 -w /usr/bin/atftpd -p x -k susp_activity
@@ -454,8 +454,8 @@
 -w /usr/bin/gdbus -p x -k gdubs_call
 
 ## setfiles
--a always,exit -F path=/usr/bin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
--a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
+-a always,exit -F path=/usr/bin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
 
 ### dbus
 -a always,exit -F path=/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
@@ -597,7 +597,7 @@
 ## T1072 third party software
 -w /etc/pacman.conf -p x -k third_party_software_mgmt
 -w /etc/pacman.d -p x -k third_party_software_mgmt
-   
+
 # Special Software ------------------------------------------------------------
 
 ## GDS specific secrets
