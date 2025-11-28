@@ -262,6 +262,7 @@
 ## SSH configuration
 -w /etc/ssh/sshd_config -k sshd
 -w /etc/ssh/sshd_config.d -k sshd
+-w /etc/ssh/sshrc -p wa -k sshrc
 
 ## root ssh key tampering
 -w /root/.ssh -p wa -k rootkey
