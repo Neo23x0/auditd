@@ -404,8 +404,18 @@
 
 -w /usr/bin/zip -p x -k Data_Compressed
 -w /usr/bin/gzip -p x -k Data_Compressed
--w /usr/bin/tar -p x -k Data_Compressed
 -w /usr/bin/bzip2 -p x -k Data_Compressed
+
+## https://www.gnu.org/software/tar/
+-a always,exit -F arch=b32 -F path=/usr/bin/tar -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/tar -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/sbin/tar -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/sbin/tar -F perm=x -F key=Data_Compressed
+
+### macOS
+-a always,exit -F arch=b32 -F path=/usr/local/bin/tar -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/tar -F perm=x -F key=Data_Compressed
 
 -w /usr/bin/lzip -p x -k Data_Compressed
 -w /usr/local/bin/lzip -p x -k Data_Compressed
