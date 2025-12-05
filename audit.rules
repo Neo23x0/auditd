@@ -410,8 +410,11 @@
 -w /usr/bin/lzip -p x -k Data_Compressed
 -w /usr/local/bin/lzip -p x -k Data_Compressed
 
--w /usr/bin/lz4 -p x -k Data_Compressed
--w /usr/local/bin/lz4 -p x -k Data_Compressed
+-a always,exit -F arch=b32 -F path=/usr/bin/lz4 -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/bin/lz4 -F perm=x -F key=Data_Compressed
+
+-a always,exit -F arch=b32 -F path=/usr/local/bin/lz4 -F perm=x -F key=Data_Compressed
+-a always,exit -F arch=b64 -F path=/usr/local/bin/lz4 -F perm=x -F key=Data_Compressed
 
 -w /usr/bin/lzop -p x -k Data_Compressed
 -w /usr/local/bin/lzop -p x -k Data_Compressed
