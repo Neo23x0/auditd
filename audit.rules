@@ -495,6 +495,10 @@
 ### may indicate privilege escalation CVE-2021-4034
 -w /usr/bin/pkexec -p x -k pkexec
 
+## https://www.trendmicro.com/en_us/research/23/i/earth-lusca-employs-new-linux-backdoor.html
+-w /dev/ptmx -p x -k susp_activity_Earth_Lusca
+-w /dev/pts -p wa -k  susp_activity_Earth_Lusca
+
 ## Suspicious shells
 -w /bin/ash -p x -k susp_shell
 -w /bin/csh -p x -k susp_shell
