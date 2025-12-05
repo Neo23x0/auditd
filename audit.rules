@@ -260,11 +260,15 @@
 -w /etc/exim4/ -p wa -k mail
 
 ## SSH configuration
--w /etc/ssh/sshd_config -k sshd
--w /etc/ssh/sshd_config.d -k sshd
+-a always,exit -F arch=b32 -F path=/etc/ssh/sshd_config -F perm=wa -F key=sshd
+-a always,exit -F arch=b64 -F path=/etc/ssh/sshd_config -F perm=wa -F key=sshd
+
+-a always,exit -F arch=b32 -F dir=/etc/ssh/sshd_config.d/ -F perm=wa -F key=sshd
+-a always,exit -F arch=b64 -F dir=/etc/ssh/sshd_config.d/ -F perm=wa -F key=sshd
 
 ## root ssh key tampering
--w /root/.ssh -p wa -k rootkey
+-a always,exit -F arch=b32 -F path=/root/.ssh -F perm=wa -F key=rootkey
+-a always,exit -F arch=b64 -F path=/root/.ssh -F perm=wa -F key=rootkey
 
 # Systemd
 -w /bin/systemctl -p x -k systemd
