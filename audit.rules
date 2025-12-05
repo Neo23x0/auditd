@@ -582,7 +582,7 @@
 -w /sbin/yast -p x -k software_mgmt
 -w /sbin/yast2 -p x -k software_mgmt
 -w /bin/rpm -p x -k software_mgmt
--w /usr/bin/zypper -k software_mgmt
+-w /usr/bin/zypper -p x -k software_mgmt
 
 # DPKG / APT-GET (Debian/Ubuntu)
 -w /usr/bin/dpkg -p x -k software_mgmt
