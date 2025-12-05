@@ -601,6 +601,11 @@
 -w /usr/bin/pipx -p x -k third_party_software_mgmt
 -w /usr/local/bin/pipx -p x -k third_party_software_mgmt
 
+-w /usr/bin/python -p x -k third_party_software_mgmt
+-w /usr/bin/python2 -p x -k third_party_software_mgmt
+-w /usr/bin/python2.7 -p x -k third_party_software_mgmt
+-w /usr/bin/python3 -p x -k third_party_software_mgmt
+
 # npm
 ## T1072 third party software
 ## https://www.npmjs.com
