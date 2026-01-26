@@ -712,6 +712,31 @@
 ## Use these lines on x86_64, ia64 instead
 #-a always,exit -F arch=b64 -S shmctl -k Inter-Process_Communication
 #-a always,exit -F arch=b64 -S shmget -k Inter-Process_Communication
+# abnormal SHM access (IPC)
+## Diagnostic Tools
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/bin/ss -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/bin/netstat -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/sbin/tcpdump -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/bin/lsof -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/bin/ps -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/bin/pstree -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/sbin/ss -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/bin/ps -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/bin/netstat -k suspect_process_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F exe=/usr/sbin/lsof -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F exe=/usr/bin/ss -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F exe=/bin/ps -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F exe=/bin/netstat -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F exe=/usr/sbin/tcpdump -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F exe=/usr/bin/lsof -k suspect_process_ipc
+
+## Behavioral & Contextual Filters
+-a always,exit -F arch=b64 -S shmget,shmat -F auid>=1000 -F auid!=4294967295 -k suspect_user_ipc
+-a always,exit -F arch=b64 -S shmget,shmat -F a1<262144 -k suspect_small_shm
+-a always,exit -F arch=b64 -S shmget,shmat -F dir=/tmp -k suspect_process_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F auid>=1000 -F auid!=4294967295 -k suspect_user_ipc
+-a always,exit -F arch=b32 -S shmget,shmat -F a1<262144 -k suspect_small_shm
+-a always,exit -F arch=b32 -S shmget,shmat -F dir=/tmp -k suspect_process_ipc
 
 # High Volume Events ----------------------------------------------------------
 
