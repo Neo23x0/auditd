@@ -7,26 +7,23 @@
 # Linux Audit Daemon - Best Practice Configuration
 # /etc/audit/audit.rules
 #
-# Compiled by Florian Roth
+# Maintained by Nextron Systems (https://www.nextron-systems.com)
 #
-# Created  : 2017/12/05
-# Modified : 2023/01/25
+# These rules provide broad, high-fidelity telemetry for Linux hosts.
+# Detection intelligence (specific tool signatures, behavioral patterns,
+# threat-actor TTPs) belongs in Sigma rules evaluated by your SIEM or
+# a host-level agent, not in the audit ruleset itself.
 #
-# Based on rules published here:
-#   Gov.uk auditd rules
-#   	https://github.com/gds-operations/puppet-auditd/pull/1
-# 	CentOS 7 hardening
-# 		https://highon.coffee/blog/security-harden-centos-7/#auditd---audit-daemon
-# 	Linux audit repo
-# 		https://github.com/linux-audit/audit-userspace/tree/master/rules
-# 	Auditd high performance linux auditing
-# 		https://linux-audit.com/tuning-auditd-high-performance-linux-auditing/
+# Aurora Linux - Real-Time Linux EDR
+#   https://github.com/Nextron-Labs/aurora-linux
 #
-# Further rules
-# 	For PCI DSS compliance see:
-# 		https://github.com/linux-audit/audit-userspace/blob/master/rules/30-pci-dss-v31.rules
-# 	For NISPOM compliance see:
-# 		https://github.com/linux-audit/audit-userspace/blob/master/rules/30-nispom.rules
+#   Aurora Linux is a real-time Linux EDR agent. It attaches eBPF programs
+#   to kernel tracepoints (process exec, file open, network state changes,
+#   bpf syscalls, and file timestamp changes) and ingests Linux audit logs,
+#   enriches the captured telemetry in user space, and evaluates each event
+#   against Sigma rules and IOC feeds to emit high-signal alerts in text or
+#   JSON. The goal is practical host detection with low overhead and clear,
+#   actionable output.
 
 # Remove any existing rules
 -D
@@ -40,7 +37,8 @@
 -f 1
 
 # Ignore errors
-## e.g. caused by users or files not found in the local environment
+## Keep optional distro-specific paths from aborting the whole load.
+## For strict validation, test a copy of this file with this line removed.
 -i
 
 # Self Auditing ---------------------------------------------------------------
@@ -56,20 +54,6 @@
 -w /etc/libaudit.conf -p wa -k auditconfig
 -w /etc/audisp/ -p wa -k audispconfig
 
-## Monitor for use of audit management tools
--w /sbin/auditctl -p x -k audittools
--w /sbin/auditd -p x -k audittools
--w /usr/sbin/auditd -p x -k audittools
--w /usr/sbin/augenrules -p x -k audittools
-
-## Access to all audit trails
-
--a always,exit -F path=/usr/sbin/ausearch -F perm=x -k audittools
--a always,exit -F path=/usr/sbin/aureport -F perm=x -k audittools
--a always,exit -F path=/usr/sbin/aulast -F perm=x -k audittools
--a always,exit -F path=/usr/sbin/aulastlogin -F perm=x -k audittools
--a always,exit -F path=/usr/sbin/auvirt -F perm=x -k audittools
-
 # Filters ---------------------------------------------------------------------
 
 ### We put these early because audit is a first match wins system.
@@ -78,17 +62,22 @@
 ## -a always,exclude -F msgtype=CWD
 
 ## Cron jobs fill the logs with stuff we normally don't want (works with SELinux)
+## NOTE: subj_type= requires SELinux. On non-SELinux systems (Debian/Ubuntu)
+## these rules are silently ignored (due to -i above). Replace with UID-based
+## filters if not running SELinux.
 -a never,user -F subj_type=crond_t
 -a never,exit -F subj_type=crond_t
 
 ## This prevents chrony from overwhelming the logs
+## NOTE: subj_type= requires SELinux (see above)
 -a never,exit -F arch=b64 -S adjtimex -F auid=-1 -F uid=chrony -F subj_type=chronyd_t
 
 ## This is not very interesting and wastes a lot of space if the server is public facing
 -a always,exclude -F msgtype=CRYPTO_KEY_USER
 
 ## Open VM Tools
--a exit,never -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
+-a never,exit -F arch=b64 -S all -F exe=/usr/bin/vmtoolsd
+-a never,exit -F arch=b32 -S all -F exe=/usr/bin/vmtoolsd
 
 ## High Volume Event Filter (especially on Linux Workstations)
 -a never,exit -F arch=b32 -F dir=/dev/shm/ -F key=sharedmemaccess
@@ -97,31 +86,14 @@
 -a never,exit -F arch=b32 -F dir=/var/lock/lvm/ -F key=locklvm
 -a never,exit -F arch=b64 -F dir=/var/lock/lvm/ -F key=locklvm
 
-## Filebeat 
+## Filebeat
 ### https://www.elastic.co/guide/en/beats/filebeat/current/directory-layout.html
-
--a never,exit -F arch=b32 -F path=/opt/filebeat -F perm=wa -F key=filebeat
--a never,exit -F arch=b64 -F path=/opt/filebeat -F perm=wa -F key=filebeat
 
 -a always,exit -F arch=b32 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
 -a always,exit -F arch=b64 -F dir=/etc/filebeat/ -F perm=wa -F key=filebeat
 
 -a always,exit -F arch=b32 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
 -a always,exit -F arch=b64 -F dir=/usr/share/filebeat/ -F perm=wa -F key=filebeat
-
--a always,exit -F arch=b64 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
--a always,exit -F arch=b32 -F dir=/usr/share/filebeat/bin/ -F perm=x -F key=filebeat
-
-### macOS
-#### https://www.elastic.co/guide/en/beats/filebeat/7.17/directory-layout.html
--a always,exit -F arch=b32 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
--a always,exit -F arch=b64 -F path=/usr/local/var/homebrew/linked/filebeat-full -F perm=x -F key=filebeat
-
--a always,exit -F arch=b32 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat 
--a always,exit -F arch=b64 -F dir=/usr/local/var/homebrew/linked/filebeat-full/bin/ -F perm=x -F key=filebeat
-
--a always,exit -F arch=b32 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat  
--a always,exit -F arch=b64 -F dir=/usr/local/etc/filebeat/ -F perm=wa -F key=filebeat
 
 ## More information on how to filter events
 ### https://access.redhat.com/solutions/2482221
@@ -133,39 +105,35 @@
 -w /etc/sysctl.d -p wa -k sysctl
 
 ## Kernel module loading and unloading
--a always,exit -F perm=x -F auid!=-1 -F path=/sbin/insmod -k modules
--a always,exit -F perm=x -F auid!=-1 -F path=/sbin/modprobe -k modules
--a always,exit -F perm=x -F auid!=-1 -F path=/sbin/rmmod -k modules
 -a always,exit -F arch=b64 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
+-a always,exit -F arch=b32 -S finit_module -S init_module -S delete_module -F auid!=-1 -k modules
 
 ## Modprobe configuration
 -w /etc/modprobe.conf -p wa -k modprobe
 -w /etc/modprobe.d -p wa -k modprobe
+-w /etc/modules-load.d/ -p wa -k modprobe
 
 ## KExec usage (all actions)
--a always,exit -F arch=b64 -S kexec_load -k KEXEC
+-a always,exit -F arch=b64 -S kexec_load -S kexec_file_load -k KEXEC
+-a always,exit -F arch=b32 -S kexec_load -S kexec_file_load -k KEXEC
 
 ## Special files
 -a always,exit -F arch=b64 -S mknod -S mknodat -k specialfiles
+-a always,exit -F arch=b32 -S mknod -S mknodat -k specialfiles
 
 ## Mount operations (only attributable)
--a always,exit -F arch=b64 -S mount -S umount2 -F auid!=-1 -k mount
-
-### NFS mount
--a always,exit -F path=/sbin/mount.nfs -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/sbin/mount.nfs -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
+-a always,exit -F arch=b64 -S mount -S umount2 -S move_mount -S open_tree -S fsopen -S fsconfig -S fsmount -F auid!=-1 -k mount
+-a always,exit -F arch=b32 -S mount -S umount2 -S move_mount -S open_tree -S fsopen -S fsconfig -S fsmount -F auid!=-1 -k mount
 
 ## Change swap (only attributable)
 -a always,exit -F arch=b64 -S swapon -S swapoff -F auid!=-1 -k swap
+-a always,exit -F arch=b32 -S swapon -S swapoff -F auid!=-1 -k swap
 
 ## Time
 -a always,exit -F arch=b64 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
+-a always,exit -F arch=b32 -F uid!=ntp -S adjtimex -S settimeofday -S clock_settime -k time
 ### Local time zone
 -w /etc/localtime -p wa -k localtime
-
-## Stunnel
--w /usr/sbin/stunnel -p x -k stunnel
--w /usr/bin/stunnel -p x -k stunnel
 
 ## Cron configuration & scheduled jobs
 -w /etc/cron.allow -p wa -k cron
@@ -176,30 +144,32 @@
 -w /etc/cron.monthly/ -p wa -k cron
 -w /etc/cron.weekly/ -p wa -k cron
 -w /etc/crontab -p wa -k cron
+-w /etc/anacrontab -p wa -k cron
+-w /etc/at.allow -p wa -k cron
+-w /etc/at.deny -p wa -k cron
 -w /var/spool/cron/ -p wa -k cron
 
 ## User, group, password databases
 -w /etc/group -p wa -k etcgroup
 -w /etc/passwd -p wa -k etcpasswd
--w /etc/gshadow -k etcgroup
--w /etc/shadow -k etcpasswd
--w /etc/security/opasswd -k opasswd
+-w /etc/gshadow -p wa -k etcgroup
+-w /etc/shadow -p wa -k etcpasswd
+-w /etc/nsswitch.conf -p wa -k etcpasswd
+-w /etc/sssd/ -p wa -k etcpasswd
+-w /etc/openldap/ -p wa -k etcpasswd
+-w /etc/krb5.conf -p wa -k etcpasswd
+-w /etc/krb5.conf.d/ -p wa -k etcpasswd
+-w /etc/subuid -p wa -k etcpasswd
+-w /etc/subgid -p wa -k etcpasswd
+
+## PAM & security configuration
+-w /etc/pam.d/ -p wa -k pam
+-w /etc/security/ -p wa -k pam
+-w /etc/polkit-1/ -p wa -k pam
 
 ## Sudoers file changes
 -w /etc/sudoers -p wa -k actions
 -w /etc/sudoers.d/ -p wa -k actions
-
-## Passwd
--w /usr/bin/passwd -p x -k passwd_modification
-
-## Tools to change group identifiers
--w /usr/sbin/groupadd -p x -k group_modification
--w /usr/sbin/groupmod -p x -k group_modification
--w /usr/sbin/addgroup -p x -k group_modification
--w /usr/sbin/useradd -p x -k user_modification
--w /usr/sbin/userdel -p x -k user_modification
--w /usr/sbin/usermod -p x -k user_modification
--w /usr/sbin/adduser -p x -k user_modification
 
 ## Login configuration and information
 -w /etc/login.defs -p wa -k login
@@ -211,32 +181,56 @@
 ## Network Environment
 ### Changes to hostname
 -a always,exit -F arch=b64 -S sethostname -S setdomainname -k network_modifications
-
-### Detect Remote Shell Use
--a always,exit -F arch=b64 -F exe=/bin/bash -F success=1 -S connect -k remote_shell
--a always,exit -F arch=b64 -F exe=/usr/bin/bash -F success=1 -S connect -k remote_shell
+-a always,exit -F arch=b32 -S sethostname -S setdomainname -k network_modifications
 
 ### Successful IPv4 Connections
 -a always,exit -F arch=b64 -S connect -F a2=16 -F success=1 -F key=network_connect_4
+-a always,exit -F arch=b32 -S connect -F a2=16 -F success=1 -F key=network_connect_4
 
 ### Successful IPv6 Connections
 -a always,exit -F arch=b64 -S connect -F a2=28 -F success=1 -F key=network_connect_6
+-a always,exit -F arch=b32 -S connect -F a2=28 -F success=1 -F key=network_connect_6
 
 ### Changes to other files
 -w /etc/hosts -p wa -k network_modifications
--w /etc/sysconfig/network -p wa -k network_modifications
--w /etc/sysconfig/network-scripts -p w -k network_modifications
+-w /etc/resolv.conf -p wa -k network_modifications
+-w /etc/hostname -p wa -k network_modifications
+-w /etc/sysconfig/ -p wa -k sysconfig
 -w /etc/network/ -p wa -k network
 -a always,exit -F dir=/etc/NetworkManager/ -F perm=wa -k network_modifications
+
+### Firewall configuration
+-w /etc/nftables.conf -p wa -k firewall
+-w /etc/iptables/ -p wa -k firewall
 
 ### Changes to issue
 -w /etc/issue -p wa -k etcissue
 -w /etc/issue.net -p wa -k etcissue
 
+## Service defaults
+-w /etc/default/ -p wa -k svc_defaults
+
+## Filesystem table
+-w /etc/fstab -p wa -k fstab
+
+## udev rules
+-w /etc/udev/rules.d/ -p wa -k udev
+
 ## System startup scripts
 -w /etc/inittab -p wa -k init
 -w /etc/init.d/ -p wa -k init
 -w /etc/init/ -p wa -k init
+-w /etc/rc.local -p wa -k init
+
+## System binary and boot path changes
+## NOTE: On modern distros /bin -> /usr/bin; bin_writes and usr_writes may
+## double-fire for the same path. Keep both for older layouts.
+-a always,exit -F arch=b32 -F dir=/bin -F perm=wa -k bin_writes
+-a always,exit -F arch=b64 -F dir=/bin -F perm=wa -k bin_writes
+-a always,exit -F arch=b32 -F dir=/usr -F perm=wa -k usr_writes
+-a always,exit -F arch=b64 -F dir=/usr -F perm=wa -k usr_writes
+-a always,exit -F arch=b32 -F dir=/boot -F perm=wa -k boot_writes
+-a always,exit -F arch=b64 -F dir=/boot -F perm=wa -k boot_writes
 
 ## Library search paths
 -w /etc/ld.so.conf -p wa -k libpath
@@ -245,14 +239,8 @@
 ## Systemwide library preloads (LD_PRELOAD)
 -w /etc/ld.so.preload -p wa -k systemwide_preloads
 
-## Pam configuration
--w /etc/pam.d/ -p wa -k pam
--w /etc/security/limits.conf -p wa  -k pam
--w /etc/security/limits.d -p wa  -k pam
--w /etc/security/pam_env.conf -p wa -k pam
--w /etc/security/namespace.conf -p wa -k pam
--w /etc/security/namespace.d -p wa -k pam
--w /etc/security/namespace.init -p wa -k pam
+## System-wide environment variables
+-w /etc/environment -p wa -k environment
 
 ## Mail configuration
 -w /etc/aliases -p wa -k mail
@@ -260,272 +248,22 @@
 -w /etc/exim4/ -p wa -k mail
 
 ## SSH configuration
--w /etc/ssh/sshd_config -k sshd
--w /etc/ssh/sshd_config.d -k sshd
+-w /etc/ssh/ -p wa -k sshd
+-w /etc/dropbear/ -p wa -k sshd
 
 ## root ssh key tampering
 -w /root/.ssh -p wa -k rootkey
 
 # Systemd
--w /bin/systemctl -p x -k systemd
 -w /etc/systemd/ -p wa -k systemd
 -w /usr/lib/systemd -p wa -k systemd
+-w /lib/systemd/ -p wa -k systemd
+-w /usr/local/lib/systemd/ -p wa -k systemd
 
-## https://systemd.network/systemd.generator.html
--w /etc/systemd/system-generators/ -p wa -k systemd_generator
--w /usr/local/lib/systemd/system-generators/ -p wa -k systemd_generator
--w /usr/lib/systemd/system-generators -p wa -k systemd_generator
-
--w /etc/systemd/user-generators/ -p wa -k systemd_generator
--w /usr/local/lib/systemd/user-generators/ -p wa -k systemd_generator
--w /lib/systemd/system-generators/ -p wa -k systemd_generator
-
-## SELinux events that modify the system's Mandatory Access Controls (MAC)
+## Mandatory Access Controls (MAC) policy
 -w /etc/selinux/ -p wa -k mac_policy
-
-## Critical elements access failures
--a always,exit -F arch=b64 -S open -F dir=/etc -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/bin -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/sbin -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/usr/bin -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/usr/sbin -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/var -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/home -F success=0 -k unauthedfileaccess
--a always,exit -F arch=b64 -S open -F dir=/srv -F success=0 -k unauthedfileaccess
-
-## Process ID change (switching accounts) applications
--w /bin/su -p x -k priv_esc
--w /usr/bin/sudo -p x -k priv_esc
-
-## Power state
--w /sbin/shutdown -p x -k power
--w /sbin/poweroff -p x -k power
--w /sbin/reboot -p x -k power
--w /sbin/halt -p x -k power
-
-## Session initiation information
--w /var/run/utmp -p wa -k session
--w /var/log/btmp -p wa -k session
--w /var/log/wtmp -p wa -k session
-
-## Discretionary Access Control (DAC) modifications
--a always,exit -F arch=b64 -S chmod  -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S chown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fchmod -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fchown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fchownat -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S fsetxattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S lchown -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S lsetxattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S removexattr -F auid>=1000 -F auid!=-1 -k perm_mod
--a always,exit -F arch=b64 -S setxattr -F auid>=1000 -F auid!=-1 -k perm_mod
-
-# Special Rules ---------------------------------------------------------------
-
-## Reconnaissance
--w /usr/bin/whoami -p x -k recon
--w /usr/bin/id -p x -k recon
--w /bin/hostname -p x -k recon
--w /bin/uname -p x -k recon
--w /etc/issue -p r -k recon
--w /etc/hostname -p r -k recon
-
-## Suspicious activity
--w /usr/bin/wget -p x -k susp_activity
--w /usr/bin/curl -p x -k susp_activity
--w /usr/bin/base64 -p x -k susp_activity
--w /bin/nc -p x -k susp_activity
--w /bin/netcat -p x -k susp_activity
--w /usr/bin/ncat -p x -k susp_activity
--w /usr/bin/ss -p x -k susp_activity
--w /usr/bin/netstat -p x -k susp_activity
--w /usr/bin/ssh -p x -k susp_activity
--w /usr/bin/scp -p x -k susp_activity
--w /usr/bin/sftp -p x -k susp_activity
--w /usr/bin/ftp -p x -k susp_activity
--w /usr/bin/socat -p x -k susp_activity
--w /usr/bin/wireshark -p x -k susp_activity
--w /usr/bin/tshark -p x -k susp_activity
--w /usr/bin/rawshark -p x -k susp_activity
--w /usr/bin/rdesktop -p x -k susp_activity
--w /usr/local/bin/rdesktop -p x -k susp_activity
--w /usr/bin/wlfreerdp -p x -k susp_activity
--w /usr/bin/xfreerdp -p x -k susp_activity
--w /usr/local/bin/xfreerdp -p x -k susp_activity
--w /usr/bin/nmap -p x -k susp_activity
-
-### uftp
-### https://sourceforge.net/projects/uftp-multicast/
-### UFTP is an encrypted multicast file transfer program, designed to securely, reliably, 
-### and efficiently transfer files to multiple receivers simultaneously.
-### FTP also has the capability to communicate over disjoint networks separated by one or 
-### more firewalls (NAT traversal) and without full end-to-end multicast capability 
-### (multicast tunneling) through the use of a UFTP proxy server.
-### T1133_External_Remote_Services
--w /usr/bin/uftp -p x -k susp_activity
--w /usr/sbin/uftp -p x -k susp_activity
-
--w /lib/systemd/system/uftp.service -k susp_activity
--w /usr/lib/systemd/system/uftp.service -k susp_activity
-
-### atftpd
-### https://sourceforge.net/projects/atftp/
-### https://github.com/madmartin/atftp
-### atftp is a client/server implementation of the TFTP protocol that implements RFCs 1350, 2090, 2347, 2348, 2349 and 7440. 
-### The server is multi-threaded and the client presents a friendly interface using libreadline.
-### T1133_External_Remote_Services
--w /usr/bin/atftpd -p x -k susp_activity
--w /usr/sbin/atftpd -p x -k susp_activity
-
--w /usr/bin/in.tftpd -p x -k susp_activity
--w /usr/sbin/in.tftpd -p x -k susp_activity
-
--w /lib/systemd/system/atftpd.service -k susp_activity
--w /usr/lib/systemd/system/atftpd.service -k susp_activity
-
--w /lib/systemd/system/atftpd.socket -k susp_activity
--w /usr/lib/systemd/system/atftpd.socket -k susp_activity
-
-## sssd
--a always,exit -F path=/usr/libexec/sssd/p11_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/krb5_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/ldap_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/selinux_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/sssd/proxy_child -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
-
-## vte-2.91
--a always,exit -F path=/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/lib64/vte-2.91/gnome-pty-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
-
-## T1002 Data Compressed
-
--w /usr/bin/zip -p x -k Data_Compressed
--w /usr/bin/gzip -p x -k Data_Compressed
--w /usr/bin/tar -p x -k Data_Compressed
--w /usr/bin/bzip2 -p x -k Data_Compressed
-
--w /usr/bin/lzip -p x -k Data_Compressed
--w /usr/local/bin/lzip -p x -k Data_Compressed
-
--w /usr/bin/lz4 -p x -k Data_Compressed
--w /usr/local/bin/lz4 -p x -k Data_Compressed
-
--w /usr/bin/lzop -p x -k Data_Compressed
--w /usr/local/bin/lzop -p x -k Data_Compressed
-
--w /usr/bin/plzip -p x -k Data_Compressed
--w /usr/local/bin/plzip -p x -k Data_Compressed
-
--w /usr/bin/pbzip2 -p x -k Data_Compressed
--w /usr/local/bin/pbzip2 -p x -k Data_Compressed
-
--w /usr/bin/lbzip2 -p x -k Data_Compressed
--w /usr/local/bin/lbzip2 -p x -k Data_Compressed
-
--w /usr/bin/pixz -p x -k Data_Compressed
--w /usr/local/bin/pixz -p x -k Data_Compressed
-
--w /usr/bin/pigz -p x -k Data_Compressed
--w /usr/local/bin/pigz -p x -k Data_Compressed
--w /usr/bin/unpigz -p x -k Data_Compressed
--w /usr/local/bin/unpigz -p x -k Data_Compressed
-
--w /usr/bin/zstd -p x -k Data_Compressed
--w /usr/local/bin/zstd -p x -k Data_Compressed
-
-## gzexe
--a always,exit -F arch=b32 -F path=/usr/bin/gzexe -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/bin/gzexe -F perm=x -F key=Data_Compressed
-
--a always,exit -F arch=b32 -F path=/usr/sbin/gzexe -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/sbin/gzexe -F perm=x -F key=Data_Compressed
-
-### macOS
-
--a always,exit -F arch=b32 -F path=/usr/local/bin/gzexe -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/local/bin/gzexe -F perm=x -F key=Data_Compressed
-
-### https://www.rkeene.org/oss/dact
--a always,exit -F arch=b32 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/bin/dact -F perm=x -F key=Data_Compressed
-
--a always,exit -F arch=b32 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/sbin/dact -F perm=x -F key=Data_Compressed
-
--a always,exit -F arch=b32 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
--a always,exit -F arch=b64 -F path=/usr/local/bin/dact -F perm=x -F key=Data_Compressed
-
-## Added to catch netcat on Ubuntu
--w /bin/nc.openbsd -p x -k susp_activity
--w /bin/nc.traditional -p x -k susp_activity
-
-## Sbin suspicious activity
--w /sbin/iptables -p x -k sbin_susp
--w /sbin/ip6tables -p x -k sbin_susp
--w /sbin/ifconfig -p x -k sbin_susp
--w /usr/sbin/arptables -p x -k sbin_susp
--w /usr/sbin/ebtables -p x -k sbin_susp
--w /sbin/xtables-nft-multi -p x -k sbin_susp
--w /usr/sbin/nft -p x -k sbin_susp
--w /usr/sbin/tcpdump -p x -k sbin_susp
--w /usr/sbin/traceroute -p x -k sbin_susp
--w /usr/sbin/ufw -p x -k sbin_susp
-
-### kde4
--a always,exit -F path=/usr/libexec/kde4/kpac_dhcp_helper -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/libexec/kde4/kdesud -F perm=x -F auid>=1000 -F auid!=4294967295 -k T1078_Valid_Accounts
-
-## dbus-send invocation
-### may indicate privilege escalation CVE-2021-3560
--w /usr/bin/dbus-send -p x -k dbus_send
--w /usr/bin/gdbus -p x -k gdubs_call
-
-## setfiles
--a always,exit -F path=/usr/bin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
--a always,exit -F path=/usr/sbin/setfiles -F perm=x -F auid>=500 -F auid!=4294967295 -k -F T1078_Valid_Accounts
-
-### dbus
--a always,exit -F path=/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
--a always,exit -F path=/usr/lib64/dbus-1/dbus-daemon-launch-helper -F perm=x -F auid>=500 -F auid!=4294967295 -k T1078_Valid_Accounts
-
-## pkexec invocation
-### may indicate privilege escalation CVE-2021-4034
--w /usr/bin/pkexec -p x -k pkexec
-
-## Suspicious shells
--w /bin/ash -p x -k susp_shell
--w /bin/csh -p x -k susp_shell
--w /bin/fish -p x -k susp_shell
--w /bin/tcsh -p x -k susp_shell
--w /bin/tclsh -p x -k susp_shell
--w /bin/xonsh -p x -k susp_shell
--w /usr/local/bin/xonsh -p x -k susp_shell
--w /bin/open -p x -k susp_shell
--w /bin/rbash -p x -k susp_shell
-
-### https://gtfobins.github.io/gtfobins/wish/
--w /bin/wish -p x -k susp_shell
--w /usr/bin/wish -p x -k susp_shell
-
-### https://gtfobins.github.io/gtfobins/yash/
--w /bin/yash -p x -k susp_shell
--w /usr/bin/yash -p x -k susp_shell
-
-# Web Server Activity
-## Change the number "33" to the ID of your WebServer user. Default: www-data:x:33:33
--a always,exit -F arch=b64 -S execve -F euid=33 -k detect_execve_www
-
-### https://clustershell.readthedocs.io/
--w /bin/clush -p x -k susp_shell
--w /usr/local/bin/clush -p x -k susp_shell
--w /etc/clustershell/clush.conf -p x -k susp_shell
-
-### https://github.com/tmux/tmux
--w /bin/tmux -p x -k susp_shell
--w /usr/local/bin/tmux -p x -k susp_shell
+-w /etc/apparmor/ -p wa -k mac_policy
+-w /etc/apparmor.d/ -p wa -k mac_policy
 
 ## Shell/profile configurations
 -w /etc/profile.d/ -p wa -k shell_profiles
@@ -537,24 +275,82 @@
 -w /etc/fish/ -p wa -k shell_profiles
 -w /etc/zsh/ -p wa -k shell_profiles
 
-### https://github.com/xxh/xxh
--w /usr/local/bin/xxh.bash -p x -k susp_shell
--w /usr/local/bin/xxh.xsh -p x -k susp_shell
--w /usr/local/bin/xxh.zsh -p x -k susp_shell
+## Critical elements access failures
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/etc -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/etc -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/bin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/bin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/sbin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/sbin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/usr/bin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/usr/bin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/usr/sbin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/usr/sbin -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/var -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/var -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/home -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/home -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b64 -S open -S openat -S open_by_handle_at -F dir=/srv -F success=0 -k unauthedfileaccess
+-a always,exit -F arch=b32 -S open -S openat -S open_by_handle_at -F dir=/srv -F success=0 -k unauthedfileaccess
 
-## Injection
-### These rules watch for code injection by the ptrace facility.
-### This could indicate someone trying to do something bad or just debugging
--a always,exit -F arch=b64 -S ptrace -F a0=0x4 -k code_injection
--a always,exit -F arch=b64 -S ptrace -F a0=0x5 -k data_injection
--a always,exit -F arch=b64 -S ptrace -F a0=0x6 -k register_injection
+## Session initiation information
+-w /var/run/utmp -p wa -k session
+-w /var/log/btmp -p wa -k session
+-w /var/log/wtmp -p wa -k session
+
+## Discretionary Access Control (DAC) modifications
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod
+
+# Special Rules ---------------------------------------------------------------
+
+## Ptrace (injection, debugging, tracing)
+### Logs all ptrace calls; Sigma differentiates by a0 value
+### (0x4=PTRACE_POKETEXT, 0x5=PTRACE_POKEDATA, 0x6=PTRACE_POKEUSR, etc.)
 -a always,exit -F arch=b64 -S ptrace -k tracing
+-a always,exit -F arch=b32 -S ptrace -k tracing
 
 ## Anonymous File Creation
-### These rules watch the use of memfd_create
 ### "memfd_create" creates anonymous file and returns a file descriptor to access it
 ### When combined with "fexecve" can be used to stealthily run binaries in memory without touching disk
 -a always,exit -F arch=b64 -S memfd_create -F key=anon_file_create
+-a always,exit -F arch=b32 -S memfd_create -F key=anon_file_create
+
+## Timestomping (T1070.006)
+-a always,exit -F arch=b64 -S utimensat -S utimes -S futimesat -F auid>=1000 -F auid!=-1 -k T1070_006_timestomp
+-a always,exit -F arch=b32 -S utimensat -S utimes -S futimesat -F auid>=1000 -F auid!=-1 -k T1070_006_timestomp
+
+## eBPF program loading
+-a always,exit -F arch=b64 -S bpf -k bpf
+-a always,exit -F arch=b32 -S bpf -k bpf
+
+## Namespace manipulation
+-a always,exit -F arch=b64 -S unshare -S setns -S pivot_root -k namespaces
+-a always,exit -F arch=b32 -S unshare -S setns -S pivot_root -k namespaces
+
+## Cross-process memory access
+-a always,exit -F arch=b64 -S process_vm_readv -S process_vm_writev -k process_vm
+-a always,exit -F arch=b32 -S process_vm_readv -S process_vm_writev -k process_vm
+
+## io_uring (known audit blind spot — operations bypass syscall auditing)
+-a always,exit -F arch=b64 -S io_uring_setup -k io_uring
+-a always,exit -F arch=b32 -S io_uring_setup -k io_uring
+
+## Exploitation primitives
+-a always,exit -F arch=b64 -S userfaultfd -k userfaultfd
+-a always,exit -F arch=b32 -S userfaultfd -k userfaultfd
+
+## System reboot/shutdown
+-a always,exit -F arch=b64 -S reboot -k reboot
+-a always,exit -F arch=b32 -S reboot -k reboot
+
+## Process accounting control
+-a always,exit -F arch=b64 -S acct -k process_accounting
+-a always,exit -F arch=b32 -S acct -k process_accounting
 
 ## Privilege Abuse
 ### The purpose of this rule is to detect when an admin may be abusing power by looking in user's home dir.
@@ -571,240 +367,70 @@
 
 # Software Management ---------------------------------------------------------
 
-# RPM (Redhat/CentOS)
--w /usr/bin/rpm -p x -k software_mgmt
--w /usr/bin/yum -p x -k software_mgmt
+## Package manager configuration
+-w /etc/apt/ -p wa -k software_mgmt
+-w /etc/dnf/ -p wa -k software_mgmt
+-w /etc/yum.repos.d/ -p wa -k software_mgmt
 
-# DNF (Fedora/RedHat 8/CentOS 8)
--w /usr/bin/dnf -p x -k software_mgmt
-
-# YAST/Zypper/RPM (SuSE)
--w /sbin/yast -p x -k software_mgmt
--w /sbin/yast2 -p x -k software_mgmt
--w /bin/rpm -p x -k software_mgmt
--w /usr/bin/zypper -k software_mgmt
-
-# DPKG / APT-GET (Debian/Ubuntu)
--w /usr/bin/dpkg -p x -k software_mgmt
--w /usr/bin/apt -p x -k software_mgmt
--w /usr/bin/apt-add-repository -p x -k software_mgmt
--w /usr/bin/apt-get -p x -k software_mgmt
--w /usr/bin/aptitude -p x -k software_mgmt
--w /usr/bin/wajig -p x -k software_mgmt
--w /usr/bin/snap -p x -k software_mgmt
-
-# PIP(3) (Python installs)
--w /usr/bin/pip -p x -k third_party_software_mgmt
--w /usr/local/bin/pip -p x -k third_party_software_mgmt
--w /usr/bin/pip3 -p x -k third_party_software_mgmt
--w /usr/local/bin/pip3 -p x -k third_party_software_mgmt
--w /usr/bin/pipx -p x -k third_party_software_mgmt
--w /usr/local/bin/pipx -p x -k third_party_software_mgmt
-
-# npm
-## T1072 third party software
-## https://www.npmjs.com
-## https://docs.npmjs.com/cli/v6/commands/npm-audit
--w /usr/bin/npm -p x -k third_party_software_mgmt
-
-# Comprehensive Perl Archive Network (CPAN) (CPAN installs)
-## T1072 third party software
-## https://www.cpan.org
--w /usr/bin/cpan -p x -k third_party_software_mgmt
-
-# Ruby (RubyGems installs)
-## T1072 third party software
-## https://rubygems.org
--w /usr/bin/gem -p x -k third_party_software_mgmt
-
-# LuaRocks (Lua installs)
-## T1072 third party software
-## https://luarocks.org
--w /usr/bin/luarocks -p x -k third_party_software_mgmt
-
-# Pacman (Arch Linux)
-## https://wiki.archlinux.org/title/Pacman
-## T1072 third party software
--w /etc/pacman.conf -p x -k third_party_software_mgmt
--w /etc/pacman.d -p x -k third_party_software_mgmt
-   
-# Special Software ------------------------------------------------------------
-
-## GDS specific secrets
--w /etc/puppet/ssl -p wa -k puppet_ssl
-
-## IBM Bigfix BESClient
--a always,exit -F arch=b64 -S open -F dir=/opt/BESClient -F success=0 -k soft_besclient
--w /var/opt/BESClient/ -p wa -k soft_besclient
-
-## CHEF https://www.chef.io/chef/
--w /etc/chef -p wa -k soft_chef
-
-## Salt
-## https://saltproject.io/
-## https://docs.saltproject.io/en/latest/ref/configuration/master.html
--w /etc/salt -p wa -k soft_salt
--w /usr/local/etc/salt -p wa -k soft_salt
-
-## Otter
-## https://inedo.com/otter
--w /etc/otter -p wa -k soft_otter
-
-## T1081 Credentials In Files
--w /usr/bin/grep -p x -k string_search
--w /usr/bin/egrep -p x -k string_search
--w /usr/bin/ugrep -p x -k string_search
-
-### https://github.com/tmbinc/bgrep
--w /usr/bin/bgrep -p x -k string_search
-
-### https://github.com/BurntSushi/ripgrep
--w /usr/bin/rg -p x -k string_search
-
-### https://github.com/awgn/cgrep
-
--w /usr/bin/cgrep -p x -k string_search
-
-### https://github.com/jpr5/ngrep
--w /usr/bin/ngrep -p x -k string_search
-
-### https://github.com/vrothberg/vgrep
--w /usr/bin/vgrep -p x -k string_search
-
-### https://github.com/monochromegane/the_platinum_searcher
--w /usr/bin/pt -p x -k string_search
-
-### https://github.com/gvansickle/ucg
--w /usr/bin/ucg -p x -k string_search
-
-### https://github.com/ggreer/the_silver_searcher
--w /usr/bin/ag -p x -k string_search
-
-### https://github.com/beyondgrep/ack3
-### https://beyondgrep.com
--w /usr/bin/ack -p x -k string_search
--w /usr/local/bin/ack -p x -k string_search
--w /usr/bin/semgrep -p x -k string_search
+## Container configuration
+-w /var/lib/docker -p wa -k docker
+-w /etc/docker -p wa -k docker
+-w /etc/containers/ -p wa -k containers
 
 # CrowdStrike Falcon
-# Identify CrowdStrike Falcon Sensor updates
--a always,exit -F arch=b32 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
--a always,exit -F arch=b64 -F path=/etc/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b32 -F dir=/etc/crowdstrike/ -F perm=wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/etc/crowdstrike/ -F perm=wa -F key=falcon_sensor
 
--a always,exit -F arch=b32 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
--a always,exit -F arch=b64 -F path=/usr/lib/crowdstrike/falcon-sensor.conf -p wa -F key=falcon_sensor_update
+-a always,exit -F arch=b32 -F dir=/usr/lib/crowdstrike/ -F perm=wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/usr/lib/crowdstrike/ -F perm=wa -F key=falcon_sensor
 
-# Identify CrowdStrike Falcon Sensor
--a always,exit -F arch=b32 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
--a always,exit -F arch=b64 -F dir=/etc/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b32 -F dir=/opt/CrowdStrike/ -F perm=wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/opt/CrowdStrike/ -F perm=wa -F key=falcon_sensor
 
--a always,exit -F arch=b32 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
--a always,exit -F arch=b64 -F dir=/usr/lib/crowdstrike/ -p wa -F key=falcon_sensor
+-a always,exit -F arch=b32 -F dir=/var/log/crowdstrike/ -F perm=wa -F key=falcon_sensor
+-a always,exit -F arch=b64 -F dir=/var/log/crowdstrike/ -F perm=wa -F key=falcon_sensor
 
--a always,exit -F arch=b32 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
--a always,exit -F arch=b64 -F dir=/opt/CrowdStrike/ -p wa -F key=falcon_sensor
-
--a always,exit -F arch=b32 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
--a always,exit -F arch=b64 -F dir=/var/log/crowdstrike/ -p wa -F key=falcon_sensor
-
-# Identify CrowdStrike Falcon Agent activity
--a always,exit -F arch=b32 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
--a always,exit -F arch=b64 -F path=/usr/bin/falcon-scout -p x -F key=falcon_agent
-
--a always,exit -F arch=b32 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
--a always,exit -F arch=b64 -F path=/usr/bin/falcon-agent -p x -F key=falcon_agent
-
-# Identify CrowdStrike Falcon Sensor network
--a always,exit -F arch=b32 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
--a always,exit -F arch=b64 -S connect -F dir=+ -F obj=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
-
-## Docker
--w /usr/bin/dockerd -k docker
--w /usr/bin/docker -k docker
--w /usr/bin/docker-containerd -k docker
--w /usr/bin/docker-runc -k docker
--w /var/lib/docker -p wa -k docker
--w /etc/docker -k docker
--w /etc/sysconfig/docker -k docker
--w /etc/sysconfig/docker-storage -k docker
--w /usr/lib/systemd/system/docker.service -k docker
--w /usr/lib/systemd/system/docker.socket -k docker
-
-## Virtualization stuff
--w /usr/bin/qemu-system-x86_64 -p x -k qemu-system-x86_64
--w /usr/bin/qemu-img -p x -k qemu-img
--w /usr/bin/qemu-kvm -p x -k qemu-kvm
--w /usr/bin/qemu -p x -k qemu
--w /usr/bin/virtualbox -p x -k virtualbox
--w /usr/bin/virt-manager -p x -k virt-manager
--w /usr/bin/VBoxManage -p x -k VBoxManage
-
-## Kubelet
--w /usr/bin/kubelet -k kubelet
+-a always,exit -F arch=b32 -S connect -F exe=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
+-a always,exit -F arch=b64 -S connect -F exe=/opt/CrowdStrike/falcon-sensor -F key=crowdstrike_network
 
 # ipc system call
 # /usr/include/linux/ipc.h
 
-## msgctl
-#-a always,exit -S ipc -F a0=14 -k Inter-Process_Communication
-## msgget
-#-a always,exit -S ipc -F a0=13 -k Inter-Process_Communication
-## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S msgctl -k Inter-Process_Communication
--a always,exit -F arch=b64 -S msgget -k Inter-Process_Communication
-
-## semctl
-#-a always,exit -S ipc -F a0=3 -k Inter-Process_Communication
-## semget
-#-a always,exit -S ipc -F a0=2 -k Inter-Process_Communication
-## semop
-#-a always,exit -S ipc -F a0=1 -k Inter-Process_Communication
-## semtimedop
-#-a always,exit -S ipc -F a0=4 -k Inter-Process_Communication
-## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S semctl -k Inter-Process_Communication
--a always,exit -F arch=b64 -S semget -k Inter-Process_Communication
--a always,exit -F arch=b64 -S semop -k Inter-Process_Communication
--a always,exit -F arch=b64 -S semtimedop -k Inter-Process_Communication
-
-## shmctl
-#-a always,exit -S ipc -F a0=24 -k Inter-Process_Communication
-## shmget
-#-a always,exit -S ipc -F a0=23 -k Inter-Process_Communication
-## Use these lines on x86_64, ia64 instead
--a always,exit -F arch=b64 -S shmctl -k Inter-Process_Communication
--a always,exit -F arch=b64 -S shmget -k Inter-Process_Communication
+-a always,exit -F arch=b64 -S msgctl -S msgget -S semctl -S semget -S semop -S semtimedop -S shmctl -S shmget -k Inter-Process_Communication
+-a always,exit -F arch=b32 -S msgctl -S msgget -S semctl -S semget -S semop -S semtimedop -S shmctl -S shmget -k Inter-Process_Communication
 
 # High Volume Events ----------------------------------------------------------
 
 ## Disable these rules if they create too many events in your environment
 
-## Common Shells
--w /bin/bash -p x -k susp_shell
--w /bin/dash -p x -k susp_shell
--w /bin/busybox -p x -k susp_shell
--w /bin/zsh -p x -k susp_shell
--w /bin/sh -p x -k susp_shell
--w /bin/ksh -p x -k susp_shell
-
-## Root command executions
--a always,exit -F arch=b64 -F euid=0 -F auid>=1000 -F auid!=-1 -S execve -k rootcmd
+## Process creation
+### Collect generic execution telemetry and derive tool- and context-specific
+### detections in downstream tooling such as Sigma / SIEM content.
+-a always,exit -F arch=b32 -S execve -S execveat -k process_creation
+-a always,exit -F arch=b64 -S execve -S execveat -k process_creation
 
 ## File Deletion Events by User
 -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=-1 -k delete
 
 ## File Access
 ### Unauthorized Access (unsuccessful)
 -a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k file_access
 -a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k file_access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=-1 -k file_access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=-1 -k file_access
 
 ### Unsuccessful Creation
--a always,exit -F arch=b64 -S mkdir,creat,link,symlink,mknod,mknodat,linkat,symlinkat -F exit=-EACCES -k file_creation
--a always,exit -F arch=b64 -S mkdir,link,symlink,mkdirat -F exit=-EPERM -k file_creation
+-a always,exit -F arch=b64 -S mkdir -S mkdirat -S creat -S link -S linkat -S symlink -S symlinkat -S mknod -S mknodat -F exit=-EACCES -k file_creation
+-a always,exit -F arch=b64 -S mkdir -S mkdirat -S creat -S link -S linkat -S symlink -S symlinkat -S mknod -S mknodat -F exit=-EPERM -k file_creation
+-a always,exit -F arch=b32 -S mkdir -S mkdirat -S creat -S link -S linkat -S symlink -S symlinkat -S mknod -S mknodat -F exit=-EACCES -k file_creation
+-a always,exit -F arch=b32 -S mkdir -S mkdirat -S creat -S link -S linkat -S symlink -S symlinkat -S mknod -S mknodat -F exit=-EPERM -k file_creation
 
 ### Unsuccessful Modification
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EACCES -k file_modification
 -a always,exit -F arch=b64 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EPERM -k file_modification
+-a always,exit -F arch=b32 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EACCES -k file_modification
+-a always,exit -F arch=b32 -S rename -S renameat -S truncate -S chmod -S setxattr -S lsetxattr -S removexattr -S lremovexattr -F exit=-EPERM -k file_modification
 
 ## 32bit ABI Exploitation
 ### https://github.com/linux-audit/audit-userspace/blob/c014eec64b3a16c004f4a75e5792a4ac2fcc0df2/rules/21-no32bit.rules
@@ -812,6 +438,8 @@
 ### in 64 bit mode. This rule will detect any use of the 32 bit syscalls
 ### because this might be a sign of someone exploiting a hole in the 32
 ### bit ABI.
+### NOTE: Explicit b32 rules above provide specific keys for SIEM correlation;
+### this catch-all additionally tags all 32-bit activity under a single key.
 -a always,exit -F arch=b32 -S all -k 32bit_abi
 
 # Make The Configuration Immutable --------------------------------------------
