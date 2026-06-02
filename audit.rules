@@ -349,9 +349,12 @@
 -a always,exit -F arch=b64 -S process_vm_readv -S process_vm_writev -k process_vm
 -a always,exit -F arch=b32 -S process_vm_readv -S process_vm_writev -k process_vm
 
-## io_uring (known audit blind spot — operations bypass syscall auditing)
--a always,exit -F arch=b64 -S io_uring_setup -k io_uring
--a always,exit -F arch=b32 -S io_uring_setup -k io_uring
+## io_uring setup/register/enter
+-a always,exit -F arch=b64 -S io_uring_setup -S io_uring_register -S io_uring_enter -k io_uring
+-a always,exit -F arch=b32 -S io_uring_setup -S io_uring_register -S io_uring_enter -k io_uring
+
+## io_uring-backed file operations
+-a always,io_uring -S openat -S openat2 -S read -S readv -S pread64 -k io_uring_file_read
 
 ## Exploitation primitives
 -a always,exit -F arch=b64 -S userfaultfd -k userfaultfd
